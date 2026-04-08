@@ -2,6 +2,9 @@
 
 **Protection en temps réel de votre agent IA Openclaw — pour tout le monde.**
 
+> 🔴 **Live demo** : https://quantumcatena.github.io/openclaw-shield/
+> 🛡️ **Backend API** : https://sentinel-t26z.onrender.com/docs
+
 > Propulsé par [QuantumCatena Sentinel](https://github.com/quantumcatena/sentinel) — la couche de sécurité post-quantique pour agents IA.
 
 ---
@@ -66,7 +69,7 @@ pip install -r requirements.txt
 uvicorn backend.main:app --reload --port 8000
 
 # 2. Dans Openclaw Shield, éditez public/app.js :
-# Ligne 12 : SENTINEL_API: "http://localhost:8000"
+# Ligne 12 : SENTINEL_API: "https://sentinel-t26z.onrender.com"
 
 # 3. Ouvrez public/index.html
 ```
@@ -85,7 +88,7 @@ def sentinel_check(action_type: str, target: str, payload: dict) -> dict:
     Soumet une action à Sentinel avant de l'exécuter.
     Retourne la décision : allow / review / block
     """
-    response = requests.post("http://localhost:8000/v1/intercept", json={
+    response = requests.post("https://sentinel-t26z.onrender.com/v1/intercept", json={
         "agent_id": "openclaw-user-agent",
         "action_type": action_type,
         "target": target,
