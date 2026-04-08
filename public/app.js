@@ -10,7 +10,7 @@
 const CONFIG = {
   // URL de votre backend Sentinel (à configurer)
   // Mettez null pour utiliser le mode démo avec données simulées
-  SENTINEL_API: null, // ex: "http://localhost:8000"
+  SENTINEL_API: "https://sentinel-t26z.onrender.com"
   POLL_INTERVAL_MS: 5000,
 };
 
