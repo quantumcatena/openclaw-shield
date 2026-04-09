@@ -246,11 +246,11 @@ async function update() {
   if (sentinelData) {
     // Mode live — données réelles depuis le backend
     const s = sentinelData.stats;
-    state.stats = {
-      allowed: s.total_allowed ?? s.allow_count ?? 0,
-      review:  s.total_review  ?? s.review_count ?? 0,
-      blocked: s.total_blocked ?? s.block_count ?? 0,
-    };
+   state.stats = {
+    allowed: s.by_decision?.allow ?? s.total_allowed ?? s.allow_count ?? 0,
+    review:  s.by_decision?.review ?? s.total_review  ?? s.review_count ?? 0,
+    blocked: s.blocked_actions ?? s.by_decision?.block ?? s.total_blocked ?? 0,
+   };
     state.events = mapSentinelAudit(sentinelData.audit.entries ?? sentinelData.audit ?? []);
   } else {
     // Mode démo
