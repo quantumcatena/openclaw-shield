@@ -8,10 +8,9 @@
 // ─── Configuration ────────────────────────────────────────────────────────────
 
 const CONFIG = {
-  // URL de votre backend Sentinel (à configurer)
-  // Mettez null pour utiliser le mode démo avec données simulées
   SENTINEL_API: "https://sentinel-t26z.onrender.com",
   POLL_INTERVAL_MS: 5000,
+  TOKEN: null, // on va le remplir juste après
 };
 
 // ─── Données de démonstration ─────────────────────────────────────────────────
@@ -162,17 +161,44 @@ function closeModal(e) {
 async function fetchFromSentinel() {
   if (!CONFIG.SENTINEL_API) return null;
 
+  // Login automatique si pas de token
+  if (!CONFIG.TOKEN) {
+    try {
+      const r = await fetch(`${CONFIG.SENTINEL_API}/v1/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: "demo2@openclaw.io",
+          password: "Demo1234!",
+          tenant_slug: "openclaw-demo2",
+        }),
+      });
+      if (r.ok) {
+        const data = await r.json();
+        CONFIG.TOKEN = data.access_token;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.warn("Login Sentinel échoué", err);
+      return null;
+    }
+  }
+
   try {
+    const headers = { "Authorization": `Bearer ${CONFIG.TOKEN}` };
     const [statsRes, auditRes] = await Promise.all([
-      fetch(`${CONFIG.SENTINEL_API}/v1/stats`),
-      fetch(`${CONFIG.SENTINEL_API}/v1/audit/recent?limit=10`),
+      fetch(`${CONFIG.SENTINEL_API}/v1/stats`, { headers }),
+      fetch(`${CONFIG.SENTINEL_API}/v1/audit/recent?limit=10`, { headers }),
     ]);
 
-    if (!statsRes.ok || !auditRes.ok) return null;
+    if (!statsRes.ok || !auditRes.ok) {
+      CONFIG.TOKEN = null; // token expiré, forcer re-login au prochain cycle
+      return null;
+    }
 
-    const stats  = await statsRes.json();
-    const audit  = await auditRes.json();
-
+    const stats = await statsRes.json();
+    const audit = await auditRes.json();
     return { stats, audit };
   } catch (err) {
     console.warn("Sentinel API non disponible — mode démo actif", err);
