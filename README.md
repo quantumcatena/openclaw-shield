@@ -6,6 +6,8 @@
 
 > 🛡️ **Backend API** : https://sentinel-t26z.onrender.com/docs
 
+> 📦 **SDK Python** : `pip install quantumcatena-sentinel` → https://pypi.org/project/quantumcatena-sentinel/
+
 > Propulsé par [QuantumCatena Sentinel](https://github.com/quantumcatena/sentinel) — la couche de sécurité post-quantique pour agents IA.
 
 ---
@@ -15,6 +17,33 @@
 Openclaw Shield est l'interface grand public de **QuantumCatena Sentinel**. Là où Sentinel s'adresse aux équipes techniques et entreprises (supply chain, finance, cybersécurité), **Openclaw Shield rend la protection IA accessible à n'importe qui** utilisant un agent [Openclaw](https://github.com/openclaw/openclaw).
 
 **En une phrase** : chaque action de votre agent IA est interceptée, évaluée, et vous est présentée de façon claire — avant qu'il ne soit trop tard.
+
+---
+
+## SDK Python — intégration en 3 lignes
+
+```bash
+pip install quantumcatena-sentinel
+```
+
+```python
+from sentinel import SentinelClient, BlockedBySentinel
+
+sentinel = SentinelClient(api_key="sk-...", agent_id="mon-agent")
+
+@sentinel.protect(action_type="send_data", data_class="pii")
+def send_email(recipient: str, subject: str, body: str) -> str:
+    return smtp.send(recipient, subject, body)  # ne s'exécute que si Sentinel autorise
+
+try:
+    send_email("unknown@external.com", "Export clients", "données PII...")
+except BlockedBySentinel as e:
+    print(f"Bloqué. Score : {e.risk_score}. Raison : {e.reasoning}")
+```
+
+L'agent ne peut pas contourner l'interception — Sentinel se place physiquement entre la décision de l'agent et l'exécution de l'action.
+
+→ [Documentation complète du SDK](https://github.com/quantumcatena/sentinel/tree/main/sdk)
 
 ---
 
@@ -75,6 +104,27 @@ uvicorn backend.main:app --reload --port 8000
 # 3. Ouvrez public/index.html
 ```
 
+### Option 3 — SDK Python (recommandé pour les développeurs)
+
+```bash
+pip install quantumcatena-sentinel
+```
+
+```python
+from sentinel import SentinelClient, SentinelToolkit
+
+sentinel = SentinelClient(api_key="sk-...", agent_id="mon-agent")
+toolkit  = SentinelToolkit(sentinel)
+
+@toolkit.tool(action_type="send_data", data_class="internal")
+def send_email(recipient: str, subject: str) -> str:
+    """Envoyer un email interne."""
+    ...
+
+# Passer les outils à votre agent Anthropic/LangChain
+response = client.messages.create(tools=toolkit.anthropic_tools, ...)
+```
+
 ---
 
 ## Connexion à votre agent Openclaw
@@ -105,11 +155,10 @@ decision = sentinel_check("send_data", "smtp://mail.example.com", {
 })
 
 if decision["decision"] == "block":
-    print(f"🚫 Action bloquée : {decision['reasoning']}")
+    print(f"Bloqué : {decision['reasoning']}")
 elif decision["decision"] == "review":
-    print(f"⚠️ Action à vérifier — score : {decision['risk_score']}")
+    print(f"A vérifier — score : {decision['risk_score']}")
 else:
-    # Procéder à l'action
     send_email(...)
 ```
 
@@ -119,10 +168,10 @@ else:
 
 | Règle | Déclencheur | Décision |
 |---|---|---|
-| 🔒 Données personnelles | PII vers serveur externe | 🚫 BLOQUÉ |
-| 💸 Transferts importants | Montant ≥ seuil configuré | 🚫 BLOQUÉ |
-| ⚠️ Contacts inconnus | Destinataire non reconnu | 🔍 À VÉRIFIER |
-| 🛡️ Exécution de code | Script non approuvé | 🚫 BLOQUÉ |
+| Données personnelles | PII vers serveur externe | BLOQUÉ |
+| Transferts importants | Montant ≥ seuil configuré | BLOQUÉ |
+| Contacts inconnus | Destinataire non reconnu | À VÉRIFIER |
+| Exécution de code | Script non approuvé | BLOQUÉ |
 
 ---
 
@@ -144,6 +193,7 @@ openclaw-shield/
 ## Stack technique
 
 - **Frontend** : HTML/CSS/JS vanilla — zéro dépendance, 100% navigateur
+- **SDK Python** : `pip install quantumcatena-sentinel` (Apache 2.0)
 - **Backend** : [QuantumCatena Sentinel](https://github.com/quantumcatena/sentinel) (FastAPI + Python)
 - **Cryptographie** : Ed25519 (démo) → Dilithium-3 NIST FIPS 204 (production)
 - **Audit** : SQLite append-only avec chaînage de hachages
@@ -160,6 +210,7 @@ openclaw-shield/
 | **Règles** | Configuration YAML avancée | 4 règles simples avec toggles |
 | **Preuve PQC** | Base64 brut | Affiché proprement sur clic |
 | **Déploiement** | Docker / serveur | Ouvrir `index.html` |
+| **SDK** | `pip install quantumcatena-sentinel` | Idem |
 
 ---
 
@@ -167,6 +218,7 @@ openclaw-shield/
 
 - [x] Dashboard frontend (démo + live)
 - [x] Connexion API Sentinel
+- [x] SDK Python publié sur PyPI
 - [ ] Notifications navigateur (Web Push)
 - [ ] Page d'onboarding "premier lancement"
 - [ ] Intégration Openclaw native (plugin)
@@ -182,6 +234,7 @@ Docteur en sciences juridiques et techniques informatiques.
 
 - Site : [quantumcatena.io](https://quantumcatena.io)
 - Email : contact@quantumcatena.io
+- SDK PyPI : [pypi.org/project/quantumcatena-sentinel](https://pypi.org/project/quantumcatena-sentinel/)
 - Backend Sentinel : [github.com/quantumcatena/sentinel](https://github.com/quantumcatena/sentinel)
 
 ---
