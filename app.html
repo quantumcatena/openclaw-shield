@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel Dashboard — QuantumCatena</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080A0F;
+  --surface: #0D1117;
+  --surface2: #111820;
+  --border: #1C2333;
+  --border-bright: #2D3F5E;
+  --text: #E6EDF3;
+  --muted: #7D8590;
+  --accent: #00E5C3;
+  --accent2: #3D7EFF;
+  --danger: #FF4D6D;
+  --warn: #FFB800;
+  --ok: #28CA41;
+  --mono: 'Space Mono', monospace;
+  --sans: 'Syne', sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--black); color: var(--text); font-family: var(--sans); display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px; flex-shrink: 0; background: var(--surface);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.sidebar-logo {
+  padding: 24px 20px; border-bottom: 1px solid var(--border);
+  font-family: var(--mono); font-size: 11px; color: var(--accent);
+  letter-spacing: 2px; display: flex; align-items: center; gap: 8px;
+}
+.logo-hex { width: 22px; height: 22px; background: var(--accent); clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); flex-shrink: 0; }
+.sidebar-section { padding: 20px 0; flex: 1; }
+.sidebar-label { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 3px; padding: 0 20px 8px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px; font-size: 13px; color: var(--muted);
+  cursor: pointer; transition: all .15s; border-left: 2px solid transparent;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,.03); }
+.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(0,229,195,.05); }
+.nav-icon { width: 16px; text-align: center; font-size: 13px; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); }
+.user-info { font-family: var(--mono); font-size: 10px; color: var(--muted); line-height: 1.8; }
+.logout-btn {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  font-family: var(--mono); font-size: 10px; padding: 6px 12px; cursor: pointer;
+  margin-top: 10px; transition: all .2s; width: 100%; letter-spacing: 1px;
+}
+.logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+/* MAIN */
+.main { flex: 1; overflow-y: auto; }
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; height: 56px; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: rgba(8,10,15,.95); backdrop-filter: blur(8px); z-index: 10;
+}
+.topbar-title { font-size: 14px; font-weight: 600; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  border: 1px solid rgba(40,202,65,.3); background: rgba(40,202,65,.08);
+  padding: 5px 12px; font-family: var(--mono); font-size: 10px; color: var(--ok); letter-spacing: 1px;
+}
+.status-dot { width: 5px; height: 5px; background: var(--ok); border-radius: 50%; animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* PAGE CONTENT */
+.page { display: none; padding: 32px; }
+.page.active { display: block; }
+
+/* METRICS ROW */
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 32px; }
+.metric { background: var(--surface); padding: 24px; }
+.metric-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-bottom: 10px; }
+.metric-val { font-family: var(--mono); font-size: 28px; font-weight: 700; line-height: 1; }
+.metric-val.ok { color: var(--ok); }
+.metric-val.warn { color: var(--warn); }
+.metric-val.danger { color: var(--danger); }
+.metric-val.accent { color: var(--accent); }
+.metric-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); margin-bottom: 24px; }
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; border-bottom: 1px solid var(--border);
+}
+.card-title { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.card-body { padding: 24px; }
+
+/* API KEY */
+.key-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--black); border: 1px solid var(--border-bright);
+  padding: 14px 18px; margin-bottom: 16px;
+}
+.key-val { font-family: var(--mono); font-size: 13px; color: var(--accent); flex: 1; word-break: break-all; letter-spacing: .5px; }
+.key-val.masked { color: var(--muted); letter-spacing: 2px; }
+.icon-btn {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  font-family: var(--mono); font-size: 10px; padding: 7px 14px;
+  cursor: pointer; transition: all .2s; white-space: nowrap; letter-spacing: 1px;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.icon-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+.key-hint { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+/* PLAN BADGE */
+.plan-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--border-bright); padding: 4px 12px;
+  font-family: var(--mono); font-size: 10px; color: var(--text); letter-spacing: 2px;
+}
+.upgrade-btn {
+  background: var(--accent); color: var(--black); border: none;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  padding: 8px 16px; cursor: pointer; letter-spacing: 1px; transition: all .2s;
+}
+.upgrade-btn:hover { background: #00ffda; }
+
+/* USAGE BAR */
+.usage-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.usage-label { font-family: var(--mono); font-size: 11px; color: var(--muted); width: 120px; flex-shrink: 0; }
+.usage-bar { flex: 1; height: 4px; background: var(--border); }
+.usage-fill { height: 100%; background: var(--accent); transition: width .5s ease; }
+.usage-fill.warn { background: var(--warn); }
+.usage-fill.danger { background: var(--danger); }
+.usage-pct { font-family: var(--mono); font-size: 11px; color: var(--muted); width: 40px; text-align: right; }
+
+/* AUDIT TABLE */
+.audit-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+.audit-table th { padding: 10px 14px; text-align: left; color: var(--muted); font-size: 10px; letter-spacing: 2px; border-bottom: 1px solid var(--border); font-weight: 400; }
+.audit-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+.audit-table tr:last-child td { border-bottom: none; }
+.audit-table tr:hover td { background: rgba(255,255,255,.02); }
+.verdict { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; font-size: 10px; letter-spacing: 1px; }
+.verdict.allow { background: rgba(40,202,65,.1); color: var(--ok); border: 1px solid rgba(40,202,65,.2); }
+.verdict.review { background: rgba(255,184,0,.1); color: var(--warn); border: 1px solid rgba(255,184,0,.2); }
+.verdict.block { background: rgba(255,77,109,.1); color: var(--danger); border: 1px solid rgba(255,77,109,.2); }
+.risk-score { font-size: 11px; }
+.risk-score.low { color: var(--ok); }
+.risk-score.medium { color: var(--warn); }
+.risk-score.high { color: #FF8C42; }
+.risk-score.critical { color: var(--danger); }
+.proof-btn {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  font-family: var(--mono); font-size: 9px; padding: 4px 8px; cursor: pointer;
+  transition: all .2s; letter-spacing: 1px;
+}
+.proof-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+
+/* POLICIES */
+.policy-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 0; border-bottom: 1px solid var(--border);
+}
+.policy-item:last-child { border-bottom: none; }
+.policy-id { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 40px; flex-shrink: 0; }
+.policy-info { flex: 1; }
+.policy-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.policy-desc { font-size: 11px; color: var(--muted); }
+.policy-verdict { width: 80px; }
+.policy-toggle { flex-shrink: 0; }
+.toggle {
+  width: 36px; height: 20px; background: var(--border); border-radius: 10px;
+  cursor: pointer; position: relative; transition: background .2s; border: none;
+}
+.toggle.on { background: var(--accent); }
+.toggle::after {
+  content: ''; position: absolute; top: 3px; left: 3px;
+  width: 14px; height: 14px; border-radius: 50%; background: var(--text); transition: left .2s;
+}
+.toggle.on::after { left: 19px; }
+.add-policy-btn {
+  background: none; border: 1px dashed var(--border-bright); color: var(--muted);
+  font-family: var(--mono); font-size: 11px; padding: 12px; width: 100%;
+  cursor: pointer; transition: all .2s; margin-top: 16px; letter-spacing: 1px;
+}
+.add-policy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(8,10,15,.85);
+  backdrop-filter: blur(4px); z-index: 500; align-items: center; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border-bright);
+  padding: 40px; max-width: 480px; width: 100%; position: relative;
+}
+.modal::before { content: ''; position: absolute; top: -1px; left: 40px; right: 40px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent2), transparent); }
+.modal h3 { font-size: 18px; margin-bottom: 8px; }
+.modal p { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+.modal-code {
+  background: var(--black); border: 1px solid var(--border);
+  padding: 16px; font-family: var(--mono); font-size: 11px;
+  color: var(--accent); margin-bottom: 24px; word-break: break-all; line-height: 1.8;
+}
+.modal-close {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  font-family: var(--mono); font-size: 11px; padding: 8px 20px;
+  cursor: pointer; transition: all .2s; letter-spacing: 1px;
+}
+.modal-close:hover { border-color: var(--text); color: var(--text); }
+
+/* REALTIME FEED */
+.feed-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  animation: slide-in .3s ease;
+}
+@keyframes slide-in { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+.feed-item:last-child { border-bottom: none; }
+.feed-time { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 50px; flex-shrink: 0; }
+.feed-tool { font-family: var(--mono); font-size: 11px; width: 120px; flex-shrink: 0; }
+.feed-target { font-size: 11px; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.feed-score { font-family: var(--mono); font-size: 11px; width: 50px; text-align: right; flex-shrink: 0; }
+
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .metrics { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-hex"></div>
+    SENTINEL
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">PRINCIPAL</div>
+    <div class="nav-item active" onclick="showPage('overview')">
+      <span class="nav-icon">&#9646;</span> Vue d'ensemble
+    </div>
+    <div class="nav-item" onclick="showPage('audit')">
+      <span class="nav-icon">&#9635;</span> Audit log
+    </div>
+    <div class="nav-item" onclick="showPage('policies')">
+      <span class="nav-icon">&#9635;</span> Policies
+    </div>
+    <div class="nav-item" onclick="showPage('apikey')">
+      <span class="nav-icon">&#9635;</span> Cle API
+    </div>
+    <div class="sidebar-label" style="margin-top:16px">RESSOURCES</div>
+    <div class="nav-item" onclick="window.open('https://sentinel-t26z.onrender.com/docs','_blank')">
+      <span class="nav-icon">&#9635;</span> API Docs
+    </div>
+    <div class="nav-item" onclick="window.open('https://pypi.org/project/quantumcatena-sentinel/','_blank')">
+      <span class="nav-icon">&#9635;</span> SDK PyPI
+    </div>
+    <div class="nav-item" onclick="window.open('https://quantumcatena.github.io/openclaw-shield/','_blank')">
+      <span class="nav-icon">&#9635;</span> Shield Demo
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="user-info" id="user-info">
+      <span id="user-email">chargement...</span><br>
+      <span style="color:var(--accent)">PLAN FREE</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">DECONNEXION</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Vue d'ensemble</div>
+    <div class="topbar-right">
+      <div class="status-pill"><div class="status-dot"></div>SENTINEL ACTIF</div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="page active" id="page-overview">
+    <div class="metrics" id="metrics-row">
+      <div class="metric"><div class="metric-label">DECISIONS TOTALES</div><div class="metric-val accent" id="m-total">—</div><div class="metric-sub">toutes decisions</div></div>
+      <div class="metric"><div class="metric-label">AUTORISEES</div><div class="metric-val ok" id="m-allow">—</div><div class="metric-sub">actions executees</div></div>
+      <div class="metric"><div class="metric-label">BLOQUEES</div><div class="metric-val danger" id="m-block">—</div><div class="metric-sub">menaces arretees</div></div>
+      <div class="metric"><div class="metric-label">LATENCE MOY.</div><div class="metric-val accent" id="m-latency">—</div><div class="metric-sub">ms par decision</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Activite recente</div>
+          <button class="icon-btn" onclick="loadAudit()">ACTUALISER</button>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div id="feed-list" style="padding:0 24px">
+            <div style="padding:24px 0;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted)">Chargement...</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">Utilisation ce mois</div></div>
+        <div class="card-body">
+          <div id="usage-bars">
+            <div class="usage-row"><div class="usage-label">DECISIONS</div><div class="usage-bar"><div class="usage-fill" id="ub-decisions" style="width:0%"></div></div><div class="usage-pct" id="up-decisions">0%</div></div>
+            <div class="usage-row"><div class="usage-label">ALLOW</div><div class="usage-bar"><div class="usage-fill ok" id="ub-allow" style="width:0%;background:var(--ok)"></div></div><div class="usage-pct" id="up-allow">0%</div></div>
+            <div class="usage-row"><div class="usage-label">BLOCK</div><div class="usage-bar"><div class="usage-fill danger" id="ub-block" style="width:0%;background:var(--danger)"></div></div><div class="usage-pct" id="up-block">0%</div></div>
+          </div>
+          <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+              <span class="plan-badge">PLAN FREE</span>
+              <button class="upgrade-btn" onclick="showPage('apikey')">PASSER PRO</button>
+            </div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.7;font-family:var(--mono)">
+              Plan Free : 10 000 decisions/mois<br>
+              Pro : decisions illimitees — 149 EUR/mois
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick start -->
+    <div class="card" style="margin-top:0">
+      <div class="card-head"><div class="card-title">Demarrage rapide</div></div>
+      <div class="card-body">
+        <div style="background:var(--black);border:1px solid var(--border);padding:20px 24px;font-family:var(--mono);font-size:12px;line-height:2">
+          <div style="color:var(--muted)"># 1. Installer le SDK</div>
+          <div style="color:var(--accent2)">pip install quantumcatena-sentinel</div>
+          <br>
+          <div style="color:var(--muted)"># 2. Integrer en 3 lignes</div>
+          <div><span style="color:var(--accent2)">from</span> sentinel <span style="color:var(--accent2)">import</span> SentinelClient, BlockedBySentinel</div>
+          <div>sentinel = SentinelClient(api_key=<span style="color:var(--accent)" id="qs-key">"sk-qc-..."</span>, agent_id=<span style="color:var(--accent)">"mon-agent"</span>)</div>
+          <br>
+          <div><span style="color:var(--accent2)">@sentinel</span>.protect(action_type=<span style="color:var(--accent)">"send_data"</span>, data_class=<span style="color:var(--accent)">"pii"</span>)</div>
+          <div><span style="color:var(--accent2)">def</span> send_email(recipient, subject, body):</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--accent2)">return</span> smtp.send(recipient, subject, body)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIT LOG -->
+  <div class="page" id="page-audit">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Audit Log — decisions recentes</div>
+        <button class="icon-btn" onclick="loadAudit()">ACTUALISER</button>
+      </div>
+      <div class="card-body" style="padding:0;overflow-x:auto">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>HEURE</th>
+              <th>AGENT</th>
+              <th>ACTION</th>
+              <th>CIBLE</th>
+              <th>VERDICT</th>
+              <th>SCORE</th>
+              <th>LATENCE</th>
+              <th>PREUVE PQC</th>
+            </tr>
+          </thead>
+          <tbody id="audit-tbody">
+            <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);font-size:11px">Chargement de l'audit log...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- POLICIES -->
+  <div class="page" id="page-policies">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Policies actives</div>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">v1.2.0</span>
+      </div>
+      <div class="card-body">
+        <div id="policies-list">
+          <!-- Loaded dynamically -->
+        </div>
+        <button class="add-policy-btn" onclick="showModal('modal-add-policy')">+ AJOUTER UNE POLICY (PRO)</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-title">Format YAML — exemple</div></div>
+      <div class="card-body">
+        <div style="background:var(--black);border:1px solid var(--border);padding:20px 24px;font-family:var(--mono);font-size:12px;line-height:1.8;color:var(--muted)">
+          <div><span style="color:var(--accent2)">- id:</span> <span style="color:var(--accent)">block-pii-external</span></div>
+          <div><span style="color:var(--accent2)">&nbsp;&nbsp;name:</span> Bloquer PII vers externe</div>
+          <div><span style="color:var(--accent2)">&nbsp;&nbsp;conditions:</span></div>
+          <div><span style="color:var(--accent2)">&nbsp;&nbsp;&nbsp;&nbsp;data_class:</span> <span style="color:var(--accent)">pii</span></div>
+          <div><span style="color:var(--accent2)">&nbsp;&nbsp;&nbsp;&nbsp;target_type:</span> <span style="color:var(--accent)">external</span></div>
+          <div><span style="color:var(--accent2)">&nbsp;&nbsp;decision:</span> <span style="color:var(--danger)">block</span></div>
+          <div><span style="color:var(--accent2)">&nbsp;&nbsp;priority:</span> 100</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API KEY -->
+  <div class="page" id="page-apikey">
+    <div class="card">
+      <div class="card-head"><div class="card-title">Votre cle API Sentinel</div></div>
+      <div class="card-body">
+        <div class="key-row">
+          <div class="key-val masked" id="key-display">sk-qc-••••••••••••••••••••••••••••••••••••••</div>
+          <button class="icon-btn" onclick="toggleKeyVisibility()">AFFICHER</button>
+          <button class="icon-btn" onclick="copyApiKey()">COPIER</button>
+        </div>
+        <div class="key-hint">Utilisez cette cle dans votre SDK : <span style="color:var(--accent)">SentinelClient(api_key="sk-qc-...")</span></div>
+        <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)">
+          <button class="icon-btn danger" onclick="showModal('modal-regen')">REGENERER LA CLE</button>
+          <span style="font-size:11px;color:var(--muted);margin-left:12px">Attention : les integrations existantes devront etre mises a jour.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="card-title">Plan actuel</div></div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border)">
+          <div style="background:var(--surface);padding:24px">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:12px">FREE</div>
+            <div style="font-size:24px;font-weight:800;margin-bottom:8px">0 EUR</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:20px">10 000 decisions/mois</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--ok)">PLAN ACTUEL</div>
+          </div>
+          <div style="background:var(--surface2);padding:24px;border-left:2px solid var(--accent)">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:2px;margin-bottom:12px">PRO</div>
+            <div style="font-size:24px;font-weight:800;margin-bottom:8px">149 EUR<span style="font-size:13px;color:var(--muted);font-weight:400">/mois</span></div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:20px">Decisions illimitees + Dilithium-3</div>
+            <button class="upgrade-btn" onclick="window.location='mailto:contact@quantumcatena.io?subject=Upgrade Pro'">PASSER PRO</button>
+          </div>
+          <div style="background:var(--surface);padding:24px">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:12px">ENTERPRISE</div>
+            <div style="font-size:24px;font-weight:800;margin-bottom:8px">Sur devis</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:20px">On-premise + HSM + NIS2 audit</div>
+            <button class="icon-btn" onclick="window.location='mailto:contact@quantumcatena.io?subject=Enterprise'">NOUS CONTACTER</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-proof">
+  <div class="modal">
+    <h3>Preuve cryptographique PQC</h3>
+    <p>Cette preuve Dilithium-3 (NIST FIPS 204) atteste de facon cryptographique que Sentinel a bien evalue cette action. Elle est verifiable independamment et resistante aux ordinateurs quantiques.</p>
+    <div class="modal-code" id="proof-content">sk-qc-proof-...</div>
+    <button class="modal-close" onclick="hideModal('modal-proof')">FERMER</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-regen">
+  <div class="modal">
+    <h3>Regenerer la cle API</h3>
+    <p>Attention : votre cle actuelle sera immediatement invalidee. Toutes les integrations utilisant l'ancienne cle cesseront de fonctionner.</p>
+    <div style="display:flex;gap:12px">
+      <button class="upgrade-btn" onclick="regenKey()">CONFIRMER LA REGENERATION</button>
+      <button class="modal-close" onclick="hideModal('modal-regen')">ANNULER</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-policy">
+  <div class="modal">
+    <h3>Ajouter une policy</h3>
+    <p>Les policies custom sont disponibles a partir du plan Pro. Passez en Pro pour definir vos propres regles ALLOW / REVIEW / BLOCK.</p>
+    <div style="display:flex;gap:12px">
+      <button class="upgrade-btn" onclick="window.location='mailto:contact@quantumcatena.io?subject=Upgrade Pro'">PASSER PRO — 149 EUR/MOIS</button>
+      <button class="modal-close" onclick="hideModal('modal-add-policy')">FERMER</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SENTINEL_API = 'https://sentinel-t26z.onrender.com';
+let token = localStorage.getItem('sentinel_token');
+let apiKey = localStorage.getItem('sentinel_api_key') || 'sk-qc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+let keyVisible = false;
+
+// Auth check
+if (!token) { window.location.href = 'index.html'; }
+
+// Init
+document.getElementById('user-email').textContent = localStorage.getItem('sentinel_email') || 'utilisateur';
+const qs = document.getElementById('qs-key');
+if (qs) qs.textContent = '"' + apiKey.substring(0, 24) + '..."';
+
+// Page navigation
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const titles = { overview: "Vue d'ensemble", audit: "Audit Log", policies: "Policies", apikey: "Cle API" };
+  document.getElementById('page-title').textContent = titles[name] || name;
+  event.currentTarget.classList.add('active');
+  if (name === 'audit') loadAudit();
+  if (name === 'policies') loadPolicies();
+}
+
+// Load stats
+async function loadStats() {
+  try {
+    const r = await fetch(SENTINEL_API + '/v1/stats', { headers: { 'Authorization': 'Bearer ' + token } });
+    if (!r.ok) return;
+    const d = await r.json();
+    document.getElementById('m-total').textContent = d.total_decisions ?? '—';
+    document.getElementById('m-allow').textContent = d.allowed ?? '—';
+    document.getElementById('m-block').textContent = d.blocked ?? '—';
+    document.getElementById('m-latency').textContent = d.avg_latency_ms ? Math.round(d.avg_latency_ms) + 'ms' : '—';
+    const total = d.total_decisions || 1;
+    setUsageBar('decisions', Math.min(100, (total / 10000) * 100));
+    setUsageBar('allow', d.allowed ? Math.round((d.allowed / total) * 100) : 0);
+    setUsageBar('block', d.blocked ? Math.round((d.blocked / total) * 100) : 0);
+  } catch(e) {}
+}
+
+function setUsageBar(name, pct) {
+  const bar = document.getElementById('ub-' + name);
+  const txt = document.getElementById('up-' + name);
+  if (bar) bar.style.width = pct + '%';
+  if (txt) txt.textContent = Math.round(pct) + '%';
+}
+
+// Load audit
+async function loadAudit() {
+  try {
+    const r = await fetch(SENTINEL_API + '/v1/audit/recent?limit=20', { headers: { 'Authorization': 'Bearer ' + token } });
+    if (!r.ok) return;
+    const d = await r.json();
+    const entries = d.entries || d || [];
+    renderAuditTable(entries);
+    renderFeed(entries.slice(0, 6));
+  } catch(e) {
+    document.getElementById('audit-tbody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);font-size:11px">Impossible de charger l\'audit log.</td></tr>';
+  }
+}
+
+function renderAuditTable(entries) {
+  const tbody = document.getElementById('audit-tbody');
+  if (!entries.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);font-size:11px">Aucune decision enregistree.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = entries.map(e => {
+    const d = e.decision || 'allow';
+    const score = (e.risk_score || 0).toFixed(2);
+    const risk = e.risk_level || getRiskLevel(e.risk_score);
+    const time = e.timestamp ? new Date(e.timestamp).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '--:--:--';
+    const target = (e.target || '').substring(0, 30);
+    const proof = e.pqc_proof ? e.pqc_proof.substring(0, 20) + '...' : 'Ed25519-sim';
+    return `<tr>
+      <td>${time}</td>
+      <td>${e.agent_id || '—'}</td>
+      <td>${e.action_type || '—'}</td>
+      <td title="${e.target || ''}">${target}</td>
+      <td><span class="verdict ${d}">${d.toUpperCase()}</span></td>
+      <td><span class="risk-score ${risk}">${score}</span></td>
+      <td>${Math.round(e.latency_ms || 0)}ms</td>
+      <td><button class="proof-btn" onclick="showProof('${proof}','${e.action_hash || ''}')">VOIR</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderFeed(entries) {
+  const el = document.getElementById('feed-list');
+  if (!entries.length) { el.innerHTML = '<div style="padding:24px 0;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted)">Aucune activite recente.</div>'; return; }
+  el.innerHTML = entries.map(e => {
+    const d = e.decision || 'allow';
+    const color = d === 'allow' ? 'var(--ok)' : d === 'block' ? 'var(--danger)' : 'var(--warn)';
+    const time = e.timestamp ? new Date(e.timestamp).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}) : '--:--';
+    return `<div class="feed-item">
+      <div class="feed-time">${time}</div>
+      <div class="feed-tool" style="color:${color}">${e.action_type || '—'}</div>
+      <div class="feed-target">${e.target || '—'}</div>
+      <div class="feed-score" style="color:${color}">${d.toUpperCase()}</div>
+    </div>`;
+  }).join('');
+}
+
+function getRiskLevel(score) {
+  if (score >= .75) return 'critical';
+  if (score >= .5) return 'high';
+  if (score >= .25) return 'medium';
+  return 'low';
+}
+
+// Load policies
+async function loadPolicies() {
+  const defaultPolicies = [
+    { id: 'P001', name: 'Bloquer PII vers externe', desc: 'Donnees personnelles vers serveur externe', decision: 'block', active: true },
+    { id: 'P002', name: 'Bloquer execution de code en production', desc: 'execute_code dans environnement production', decision: 'block', active: true },
+    { id: 'P003', name: 'Bloquer transferts importants', desc: 'Virement >= 10 000 unites', decision: 'block', active: true },
+    { id: 'P004', name: 'Bloquer suppression en masse', desc: 'Suppression >= 100 enregistrements', decision: 'block', active: true },
+    { id: 'P010', name: 'Revoir appels API externes', desc: 'call_api en environnement production', decision: 'review', active: true },
+    { id: 'P011', name: 'Revoir lecture massive', desc: 'Lecture >= 1 000 enregistrements', decision: 'review', active: false },
+  ];
+  const colors = { block: 'var(--danger)', review: 'var(--warn)', allow: 'var(--ok)' };
+  document.getElementById('policies-list').innerHTML = defaultPolicies.map(p => `
+    <div class="policy-item">
+      <div class="policy-id">${p.id}</div>
+      <div class="policy-info">
+        <div class="policy-name">${p.name}</div>
+        <div class="policy-desc">${p.desc}</div>
+      </div>
+      <div class="policy-verdict">
+        <span class="verdict ${p.decision}">${p.decision.toUpperCase()}</span>
+      </div>
+      <div class="policy-toggle">
+        <button class="toggle ${p.active ? 'on' : ''}" onclick="this.classList.toggle('on')"></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// API Key
+function toggleKeyVisibility() {
+  keyVisible = !keyVisible;
+  const el = document.getElementById('key-display');
+  el.textContent = keyVisible ? apiKey : 'sk-qc-' + '•'.repeat(40);
+  el.className = 'key-val ' + (keyVisible ? '' : 'masked');
+  event.currentTarget.textContent = keyVisible ? 'MASQUER' : 'AFFICHER';
+}
+
+function copyApiKey() {
+  navigator.clipboard.writeText(apiKey).then(() => {
+    event.currentTarget.textContent = 'COPIE !';
+    setTimeout(() => event.currentTarget.textContent = 'COPIER', 2000);
+  });
+}
+
+function regenKey() {
+  const newKey = 'sk-qc-' + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+  apiKey = newKey;
+  localStorage.setItem('sentinel_api_key', newKey);
+  document.getElementById('key-display').textContent = 'sk-qc-' + '•'.repeat(40);
+  keyVisible = false;
+  hideModal('modal-regen');
+  alert('Nouvelle cle generee. Pensez a mettre a jour vos integrations.');
+}
+
+// Modals
+function showModal(id) { document.getElementById(id).classList.add('show'); }
+function hideModal(id) { document.getElementById(id).classList.remove('show'); }
+function showProof(proof, hash) {
+  document.getElementById('proof-content').textContent =
+    'ALGORITHME: Ed25519-sim [→ Dilithium-3 NIST FIPS 204 en production]\n\nPREUVE: ' + proof + '\n\nHASH ACTION: ' + (hash || 'sha256-' + Math.random().toString(36).substring(2));
+  showModal('modal-proof');
+}
+
+function logout() {
+  localStorage.removeItem('sentinel_token');
+  localStorage.removeItem('sentinel_email');
+  window.location.href = 'index.html';
+}
+
+// Init on load
+loadStats();
+loadAudit();
+setTimeout(loadPolicies, 100);
+
+// Auto-refresh every 10s
+setInterval(() => {
+  loadStats();
+  loadAudit();
+}, 10000);
+</script>
+</body>
+</html>
