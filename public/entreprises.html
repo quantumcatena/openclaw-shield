@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Openclaw Shield — Protection IA pour les entreprises | QuantumCatena</title>
+<meta name="description" content="Sécurisez vos assistants IA, restez conforme RGPD & NIS2. Déploiement en moins d'une semaine. Solution clé en main pour PME, cabinets d'avocats, professions de santé.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:     #0f1923;
+  --ink-2:   #2a3a4a;
+  --ink-3:   #4a6070;
+  --amber:   #c8860a;
+  --amber-l: #f0a824;
+  --amber-bg:#fdf6e8;
+  --slate:   #1a2e42;
+  --slate-l: #243d55;
+  --cream:   #faf8f4;
+  --white:   #ffffff;
+  --line:    #e2ddd6;
+  --red-soft:#c0392b;
+  --green-soft:#1a7a4a;
+  --r: 8px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: var(--ink);
+  background: var(--cream);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(15,25,35,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(200,134,10,0.2);
+  padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.topbar-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem; font-weight: 600; color: var(--white);
+  text-decoration: none; letter-spacing: 0.02em;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.topbar-logo span { color: var(--amber-l); }
+.topbar-nav { display: flex; align-items: center; gap: 2rem; }
+.topbar-nav a {
+  color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.875rem;
+  font-weight: 400; transition: color 0.2s;
+}
+.topbar-nav a:hover { color: var(--amber-l); }
+.btn-nav {
+  background: var(--amber); color: var(--white) !important;
+  padding: 0.45rem 1.2rem; border-radius: 4px; font-weight: 500 !important;
+  transition: background 0.2s !important;
+}
+.btn-nav:hover { background: var(--amber-l) !important; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--slate);
+  display: flex; align-items: center;
+  padding: 8rem 2rem 5rem;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 50%, rgba(200,134,10,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 10% 80%, rgba(26,62,85,0.8) 0%, transparent 60%);
+}
+.hero-grid {
+  position: absolute; inset: 0; opacity: 0.04;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.hero-inner {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 0 auto; width: 100%;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(200,134,10,0.15); border: 1px solid rgba(200,134,10,0.3);
+  color: var(--amber-l); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.35rem 0.9rem; border-radius: 100px; margin-bottom: 1.5rem;
+}
+.hero-tag::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 700; line-height: 1.15;
+  color: var(--white); margin-bottom: 1.5rem;
+}
+.hero h1 em {
+  font-style: italic; color: var(--amber-l);
+  display: block;
+}
+.hero-desc {
+  color: rgba(255,255,255,0.7); font-size: 1.05rem; margin-bottom: 2rem;
+  max-width: 480px;
+}
+.hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+.btn-primary {
+  background: var(--amber); color: var(--white);
+  padding: 0.85rem 2rem; border-radius: 6px; font-size: 0.95rem;
+  font-weight: 500; text-decoration: none; transition: all 0.2s;
+  border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-primary:hover { background: var(--amber-l); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,134,10,0.3); }
+.btn-ghost {
+  background: transparent; color: rgba(255,255,255,0.8);
+  padding: 0.85rem 2rem; border-radius: 6px; font-size: 0.95rem;
+  font-weight: 400; text-decoration: none; transition: all 0.2s;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.btn-ghost:hover { border-color: var(--amber-l); color: var(--amber-l); }
+
+.hero-proof {
+  display: flex; gap: 2rem; align-items: center;
+}
+.hero-proof-item { text-align: center; }
+.hero-proof-item .num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem; font-weight: 700; color: var(--amber-l); display: block;
+}
+.hero-proof-item .lbl {
+  font-size: 0.72rem; color: rgba(255,255,255,0.5);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.hero-proof-sep { width: 1px; height: 40px; background: rgba(255,255,255,0.15); }
+
+/* Hero right — scenario card */
+.hero-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 2rem;
+  backdrop-filter: blur(8px);
+}
+.hero-card-title {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--amber-l); margin-bottom: 1.2rem; font-weight: 500;
+}
+.scenario-item {
+  display: flex; align-items: flex-start; gap: 0.9rem;
+  padding: 0.9rem 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.scenario-item:last-child { border-bottom: none; }
+.scenario-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0; margin-top: 2px;
+}
+.icon-red { background: rgba(192,57,43,0.2); }
+.icon-orange { background: rgba(200,134,10,0.2); }
+.icon-green { background: rgba(26,122,74,0.15); }
+.scenario-content {}
+.scenario-action {
+  font-size: 0.82rem; color: rgba(255,255,255,0.9); font-weight: 400;
+}
+.scenario-result {
+  font-size: 0.75rem; margin-top: 0.2rem; font-weight: 500;
+}
+.r-block { color: #e74c3c; }
+.r-warn  { color: var(--amber-l); }
+.r-ok    { color: #2ecc71; }
+
+/* ── SECTION GÉNÉRIQUE ── */
+section { padding: 6rem 2rem; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-label {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--amber); font-weight: 500; margin-bottom: 0.8rem;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.section-label::before { content:''; display:block; width:24px; height:1px; background:var(--amber); }
+h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 700; line-height: 1.2;
+  color: var(--ink); margin-bottom: 1rem;
+}
+h2 em { font-style: italic; color: var(--amber); }
+.section-sub { color: var(--ink-3); font-size: 1rem; max-width: 560px; margin-bottom: 3rem; }
+
+/* ── ALERTE SECTION ── */
+.alert-section { background: var(--white); }
+.alert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+.alert-card {
+  border: 1px solid var(--line); border-radius: var(--r);
+  padding: 1.8rem; position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.alert-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+.alert-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.alert-card.danger::before  { background: #e74c3c; }
+.alert-card.warning::before { background: var(--amber); }
+.alert-card.info::before    { background: #3498db; }
+.alert-card-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+.alert-card h3 { font-size: 1rem; font-weight: 500; color: var(--ink); margin-bottom: 0.5rem; }
+.alert-card p  { font-size: 0.875rem; color: var(--ink-3); line-height: 1.6; }
+.alert-card .consequence {
+  margin-top: 1rem; padding: 0.6rem 0.9rem;
+  background: rgba(200,134,10,0.08); border-radius: 4px;
+  font-size: 0.8rem; color: var(--amber); font-weight: 500;
+}
+
+/* ── OFFRES ── */
+.offres-section { background: var(--cream); }
+.offres-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2.5rem; }
+.offre-card {
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: 12px; padding: 2.2rem; position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.offre-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+.offre-card.featured {
+  border-color: var(--amber); box-shadow: 0 0 0 2px rgba(200,134,10,0.15);
+}
+.offre-badge {
+  position: absolute; top: 1.2rem; right: 1.2rem;
+  background: var(--amber); color: white;
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.25rem 0.7rem; border-radius: 100px;
+}
+.offre-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem; font-weight: 700; color: var(--line);
+  line-height: 1; margin-bottom: 0.5rem;
+}
+.offre-card h3 {
+  font-size: 1.15rem; font-weight: 500; color: var(--ink); margin-bottom: 0.5rem;
+}
+.offre-card .offre-who {
+  font-size: 0.8rem; color: var(--amber); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem;
+}
+.offre-card p { font-size: 0.9rem; color: var(--ink-3); margin-bottom: 1.2rem; line-height: 1.6; }
+.offre-features { list-style: none; margin-bottom: 1.5rem; }
+.offre-features li {
+  font-size: 0.875rem; color: var(--ink-2); padding: 0.35rem 0;
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+.offre-features li:last-child { border-bottom: none; }
+.offre-features li::before { content: '→'; color: var(--amber); font-weight: 500; margin-top: 0.1rem; }
+.offre-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 700; color: var(--ink);
+  margin-bottom: 1rem;
+}
+.offre-price span { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 300; color: var(--ink-3); }
+.btn-offre {
+  display: block; text-align: center; padding: 0.75rem;
+  background: var(--slate); color: var(--white); border-radius: 6px;
+  text-decoration: none; font-size: 0.875rem; font-weight: 500;
+  transition: background 0.2s;
+}
+.btn-offre:hover { background: var(--amber); }
+.offre-card.featured .btn-offre { background: var(--amber); }
+.offre-card.featured .btn-offre:hover { background: var(--amber-l); }
+
+/* ── PROFILS ── */
+.profils-section { background: var(--slate); padding: 6rem 2rem; }
+.profils-section h2 { color: var(--white); }
+.profils-section .section-sub { color: rgba(255,255,255,0.6); }
+.profils-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+.profil-card {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r); padding: 1.8rem;
+  transition: background 0.2s, border-color 0.2s;
+}
+.profil-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(200,134,10,0.3); }
+.profil-icon { font-size: 2rem; margin-bottom: 1rem; }
+.profil-card h3 { font-size: 0.95rem; font-weight: 500; color: var(--white); margin-bottom: 0.5rem; }
+.profil-card p  { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
+.profil-tag {
+  display: inline-block; margin-top: 1rem;
+  font-size: 0.7rem; color: var(--amber-l);
+  border: 1px solid rgba(200,134,10,0.3); padding: 0.2rem 0.6rem; border-radius: 100px;
+  font-weight: 500;
+}
+
+/* ── COMMENT ÇA MARCHE ── */
+.how-section { background: var(--white); }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; margin-top: 3rem; position: relative; }
+.steps::before {
+  content: ''; position: absolute; top: 2.5rem; left: 10%; right: 10%; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--line), var(--line), transparent);
+  z-index: 0;
+}
+.step { text-align: center; padding: 0 1rem; position: relative; z-index: 1; }
+.step-circle {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--cream); border: 2px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.2rem; font-size: 1.2rem;
+  transition: border-color 0.3s, background 0.3s;
+}
+.step:hover .step-circle { border-color: var(--amber); background: var(--amber-bg); }
+.step h4 { font-size: 0.9rem; font-weight: 500; color: var(--ink); margin-bottom: 0.4rem; }
+.step p  { font-size: 0.8rem; color: var(--ink-3); }
+.step-num {
+  position: absolute; top: -0.5rem; right: calc(50% - 1.5rem);
+  width: 1.5rem; height: 1.5rem; background: var(--amber);
+  border-radius: 50%; font-size: 0.65rem; font-weight: 700; color: white;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── CONFORMITE ── */
+.compliance-section { background: var(--cream); }
+.compliance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.compliance-badges { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
+.badge {
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: 6px; padding: 0.7rem 1.2rem;
+  font-size: 0.82rem; font-weight: 500; color: var(--ink-2);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-soft); }
+.compliance-text h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 700; margin-bottom: 1rem; color: var(--ink);
+}
+.compliance-text p { font-size: 0.9rem; color: var(--ink-3); margin-bottom: 1rem; }
+.compliance-callout {
+  background: var(--amber-bg); border-left: 3px solid var(--amber);
+  padding: 1rem 1.2rem; border-radius: 0 6px 6px 0; margin-top: 1.5rem;
+}
+.compliance-callout p { font-size: 0.875rem; color: var(--ink-2); margin: 0; font-style: italic; }
+
+/* ── TARIFS ── */
+.tarifs-section { background: var(--white); }
+.tarifs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+.tarif-card {
+  border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.tarif-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+.tarif-card.highlight { border-color: var(--amber); }
+.tarif-header {
+  padding: 1.5rem; border-bottom: 1px solid var(--line);
+  background: var(--cream);
+}
+.tarif-card.highlight .tarif-header { background: var(--amber-bg); }
+.tarif-header h3 { font-size: 1rem; font-weight: 500; color: var(--ink); margin-bottom: 0.3rem; }
+.tarif-header .who { font-size: 0.78rem; color: var(--ink-3); }
+.tarif-price {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.tarif-amount {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem; font-weight: 700; color: var(--ink);
+}
+.tarif-amount .per { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; color: var(--ink-3); }
+.tarif-setup { font-size: 0.78rem; color: var(--ink-3); margin-top: 0.2rem; }
+.tarif-items { padding: 1.2rem 1.5rem; list-style: none; }
+.tarif-items li {
+  font-size: 0.85rem; color: var(--ink-2); padding: 0.3rem 0;
+  display: flex; align-items: flex-start; gap: 0.5rem;
+}
+.tarif-items li::before { content: '✓'; color: var(--green-soft); font-weight: 600; }
+.tarif-footer { padding: 0 1.5rem 1.5rem; }
+
+/* ── CTA FINAL ── */
+.cta-section {
+  background: var(--slate); padding: 6rem 2rem;
+  text-align: center; position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(200,134,10,0.1) 0%, transparent 70%);
+}
+.cta-section h2 { color: var(--white); position: relative; z-index: 1; }
+.cta-section p { color: rgba(255,255,255,0.65); font-size: 1rem; margin: 1rem auto 2.5rem; max-width: 500px; position: relative; z-index: 1; }
+.cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+.btn-light {
+  background: var(--white); color: var(--slate);
+  padding: 0.85rem 2rem; border-radius: 6px; font-size: 0.95rem;
+  font-weight: 500; text-decoration: none; transition: all 0.2s;
+}
+.btn-light:hover { background: var(--amber-bg); transform: translateY(-1px); }
+.cta-reassurance {
+  margin-top: 2rem; font-size: 0.8rem; color: rgba(255,255,255,0.4);
+  position: relative; z-index: 1;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink); padding: 3rem 2rem;
+  color: rgba(255,255,255,0.5); font-size: 0.82rem;
+}
+.footer-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--white); font-size: 1rem; font-weight: 600; text-decoration: none;
+}
+.footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.footer-links a { color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--amber-l); }
+
+/* ── ANIMATIONS ── */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .hero-card { display: none; }
+  .topbar-nav { display: none; }
+  .compliance-grid { grid-template-columns: 1fr; }
+  .steps::before { display: none; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <a href="index.html" class="topbar-logo">🦞 Openclaw <span>Shield</span></a>
+  <div class="topbar-nav">
+    <a href="#risques">Les risques</a>
+    <a href="#offres">Nos offres</a>
+    <a href="#tarifs">Tarifs</a>
+    <a href="#contact" class="btn-nav">Nous contacter</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag">Solution disponible maintenant</div>
+      <h1>
+        Votre assistant IA agit
+        <em>en votre nom.</em>
+        Savez-vous ce qu'il fait ?
+      </h1>
+      <p class="hero-desc">
+        Openclaw Shield surveille chaque action de vos outils IA en temps réel —
+        avant qu'il ne soit trop tard. Sans compétence technique requise.
+        Conforme RGPD & NIS2.
+      </p>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn-primary">Demander une démo gratuite →</a>
+        <a href="#offres" class="btn-ghost">Voir les offres</a>
+      </div>
+      <div class="hero-proof">
+        <div class="hero-proof-item">
+          <span class="num">&lt; 1 sem.</span>
+          <span class="lbl">Déploiement</span>
+        </div>
+        <div class="hero-proof-sep"></div>
+        <div class="hero-proof-item">
+          <span class="num">0 €</span>
+          <span class="lbl">Pour commencer</span>
+        </div>
+        <div class="hero-proof-sep"></div>
+        <div class="hero-proof-item">
+          <span class="num">NIS2</span>
+          <span class="lbl">Compliant</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-card">
+        <div class="hero-card-title">Exemple — ce que voit votre tableau de bord</div>
+        <div class="scenario-item">
+          <div class="scenario-icon icon-red">🚫</div>
+          <div class="scenario-content">
+            <div class="scenario-action">Votre assistant tente d'envoyer un contrat à une adresse inconnue</div>
+            <div class="scenario-result r-block">BLOQUÉ automatiquement — vous recevez une alerte</div>
+          </div>
+        </div>
+        <div class="scenario-item">
+          <div class="scenario-icon icon-orange">⚠️</div>
+          <div class="scenario-content">
+            <div class="scenario-action">L'IA veut déclencher un virement de 4 800 €</div>
+            <div class="scenario-result r-warn">À VÉRIFIER — votre approbation requise</div>
+          </div>
+        </div>
+        <div class="scenario-item">
+          <div class="scenario-icon icon-green">✅</div>
+          <div class="scenario-content">
+            <div class="scenario-action">Lecture d'un document interne de votre équipe</div>
+            <div class="scenario-result r-ok">AUTORISÉ — action normale et traçée</div>
+          </div>
+        </div>
+        <div class="scenario-item">
+          <div class="scenario-icon icon-red">🚫</div>
+          <div class="scenario-content">
+            <div class="scenario-action">Extraction de données clients vers un serveur externe</div>
+            <div class="scenario-result r-block">BLOQUÉ — preuve cryptographique enregistrée</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RISQUES -->
+<section class="alert-section" id="risques">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Pourquoi agir maintenant</div>
+      <h2>Les assistants IA prennent des décisions <em>sans vous demander.</em></h2>
+      <p class="section-sub">
+        ChatGPT, Copilot, agents automatisés… Ces outils sont utiles. Mais ils peuvent aussi
+        envoyer des données confidentielles, déclencher des actions sensibles, et vous exposer
+        à des sanctions sans que vous le sachiez.
+      </p>
+    </div>
+    <div class="alert-grid">
+      <div class="alert-card danger reveal reveal-delay-1">
+        <div class="alert-card-icon">⚖️</div>
+        <h3>Cabinets d'avocats & notaires</h3>
+        <p>Votre assistant traite des actes, des coordonnées clients, des contrats confidentiels.
+        Un envoi non autorisé = violation du secret professionnel.</p>
+        <div class="consequence">Amende RGPD jusqu'à 4% du CA annuel</div>
+      </div>
+      <div class="alert-card warning reveal reveal-delay-2">
+        <div class="alert-card-icon">🏥</div>
+        <h3>Santé & médico-social</h3>
+        <p>Les données de santé sont les plus protégées par la loi. Un agent IA qui accède à
+        des dossiers patients sans contrôle expose directement l'établissement.</p>
+        <div class="consequence">Obligation de déclaration à la CNIL sous 72h</div>
+      </div>
+      <div class="alert-card warning reveal reveal-delay-3">
+        <div class="alert-card-icon">🏭</div>
+        <h3>PME industrielles & ETI</h3>
+        <p>La directive NIS2 est active depuis octobre 2024. Les entreprises de taille
+        intermédiaire sont dans son périmètre et doivent prouver leur conformité.</p>
+        <div class="consequence">Audit NIS2 : traçabilité obligatoire des actions IA</div>
+      </div>
+      <div class="alert-card info reveal reveal-delay-4">
+        <div class="alert-card-icon">📊</div>
+        <h3>Comptabilité & finance</h3>
+        <p>Les agents IA connectés à vos outils de gestion peuvent initier des actions
+        financières. Sans supervision, vous ne pouvez pas les prouver ni les contester.</p>
+        <div class="consequence">Responsabilité civile directe de l'entreprise</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFRES -->
+<section class="offres-section" id="offres">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Trois situations, une solution</div>
+      <h2>Quelle que soit votre situation, <em>nous avons une réponse.</em></h2>
+      <p class="section-sub">Vous avez déjà un agent IA, vous voulez en installer un, ou vous avez besoin d'une solution 100% locale et confidentielle. Nous couvrons les trois.</p>
+    </div>
+    <div class="offres-grid">
+      <!-- Offre A -->
+      <div class="offre-card reveal reveal-delay-1">
+        <div class="offre-num">01</div>
+        <div class="offre-who">Vous utilisez déjà un agent IA</div>
+        <h3>Sécuriser ce que vous avez</h3>
+        <p>Vous utilisez ChatGPT, Copilot, ou un agent sur mesure. On connecte Openclaw Shield
+        en quelques jours pour surveiller toutes ses actions.</p>
+        <ul class="offre-features">
+          <li>Tableau de bord de surveillance en temps réel</li>
+          <li>Blocage automatique des actions dangereuses</li>
+          <li>Registre d'audit conforme RGPD & NIS2</li>
+          <li>Alertes email ou SMS immédiates</li>
+          <li>Installation assurée par QuantumCatena</li>
+        </ul>
+        <div class="offre-price">149 € <span>HT / mois + installation</span></div>
+        <a href="#contact" class="btn-offre">Demander une démo</a>
+      </div>
+      <!-- Offre B -->
+      <div class="offre-card featured reveal reveal-delay-2">
+        <div class="offre-badge">Le plus demandé</div>
+        <div class="offre-num">02</div>
+        <div class="offre-who">Vous n'avez pas encore d'agent IA</div>
+        <h3>Déployer & sécuriser d'un coup</h3>
+        <p>Nous installons un assistant IA adapté à votre métier (sur cloud, vous payez vos
+        propres tokens OpenAI/Anthropic), et nous le protégeons avec Openclaw Shield dès le premier jour.</p>
+        <ul class="offre-features">
+          <li>Choix de l'assistant adapté à votre secteur</li>
+          <li>Vous gardez le contrôle de vos données</li>
+          <li>Tokens IA : vous payez directement le fournisseur</li>
+          <li>Protection Openclaw Shield incluse</li>
+          <li>Formation MODE83 incluse (demi-journée)</li>
+        </ul>
+        <div class="offre-price">Sur devis <span>selon votre configuration</span></div>
+        <a href="#contact" class="btn-offre">Nous contacter</a>
+      </div>
+      <!-- Offre C -->
+      <div class="offre-card reveal reveal-delay-3">
+        <div class="offre-num">03</div>
+        <div class="offre-who">Confidentialité absolue requise</div>
+        <h3>Tout en local, zéro cloud</h3>
+        <p>Votre assistant IA tourne entièrement sur votre serveur. Aucune donnée ne quitte vos locaux.
+        Idéal pour les professions réglementées ou les gros volumes de requêtes.</p>
+        <ul class="offre-features">
+          <li>LLM local (Mistral, Llama3) sur votre matériel</li>
+          <li>Génération illimitée — aucun token à payer</li>
+          <li>Données 100% chez vous, jamais dans le cloud</li>
+          <li>Protection Openclaw Shield en local</li>
+          <li>Support mensuel QuantumCatena inclus</li>
+        </ul>
+        <div class="offre-price">Sur devis <span>installation + support mensuel</span></div>
+        <a href="#contact" class="btn-offre">Demander un devis</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROFILS -->
+<section class="profils-section" id="profils">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Pour qui ?</div>
+      <h2 style="color:white">Conçu pour les <em>professionnels du quotidien.</em></h2>
+      <p class="section-sub">Pas besoin d'une équipe IT. Pas besoin de comprendre l'IA. Juste besoin de travailler sereinement.</p>
+    </div>
+    <div class="profils-grid">
+      <div class="profil-card reveal reveal-delay-1">
+        <div class="profil-icon">⚖️</div>
+        <h3>Cabinets d'avocats & juristes</h3>
+        <p>Secret professionnel, données clients sensibles, actes confidentiels. Offre locale recommandée.</p>
+        <div class="profil-tag">Offre 03 — Local recommandée</div>
+      </div>
+      <div class="profil-card reveal reveal-delay-2">
+        <div class="profil-icon">🏥</div>
+        <h3>Santé & médico-social</h3>
+        <p>Dossiers patients, données CNIL catégorie spéciale. Traçabilité et preuves cryptographiques obligatoires.</p>
+        <div class="profil-tag">Offre 03 — Local recommandée</div>
+      </div>
+      <div class="profil-card reveal reveal-delay-3">
+        <div class="profil-icon">🏗️</div>
+        <h3>PME industrielles & BTP</h3>
+        <p>Devis, plans, communications clients. NIS2 applicable. Déploiement rapide possible.</p>
+        <div class="profil-tag">Offre 01 ou 02</div>
+      </div>
+      <div class="profil-card reveal reveal-delay-4">
+        <div class="profil-icon">💼</div>
+        <h3>Comptabilité & RH externalisé</h3>
+        <p>Données salariales, fiscales, bilans. Responsabilité élevée. Audit trail obligatoire.</p>
+        <div class="profil-tag">Offre 02 recommandée</div>
+      </div>
+      <div class="profil-card reveal reveal-delay-1">
+        <div class="profil-icon">🏛️</div>
+        <h3>Collectivités & secteur public</h3>
+        <p>NIS2 étendue aux entités publiques. Marchés publics, UGAP. Déploiement sur site possible.</p>
+        <div class="profil-tag">Toutes offres</div>
+      </div>
+      <div class="profil-card reveal reveal-delay-2">
+        <div class="profil-icon">🎓</div>
+        <h3>Centres de formation & écoles</h3>
+        <p>Données étudiants, RGPD éducation. Formation MODE83 disponible pour vos équipes.</p>
+        <div class="profil-tag">Offre 02 + Formation</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMENT ÇA MARCHE -->
+<section class="how-section" id="how">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Simplicité</div>
+      <h2>Opérationnel en <em>moins d'une semaine.</em></h2>
+      <p class="section-sub">Pas de code à écrire de votre côté. Nous gérons tout.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal reveal-delay-1">
+        <div class="step-circle">📞<span class="step-num">1</span></div>
+        <h4>Appel de découverte</h4>
+        <p>30 minutes pour comprendre votre situation et vous orienter vers la bonne offre.</p>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-circle">🔧<span class="step-num">2</span></div>
+        <h4>Installation par QuantumCatena</h4>
+        <p>Nous déployons Openclaw Shield sur votre environnement. Vous ne touchez à rien.</p>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step-circle">🎓<span class="step-num">3</span></div>
+        <h4>Formation par MODE83</h4>
+        <p>Une demi-journée pour que vos équipes comprennent le tableau de bord et les alertes.</p>
+      </div>
+      <div class="step reveal reveal-delay-4">
+        <div class="step-circle">🛡️<span class="step-num">4</span></div>
+        <h4>Mise en protection</h4>
+        <p>Votre agent IA est sous surveillance. Vous recevez des rapports réguliers.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:0.5s">
+        <div class="step-circle">📋<span class="step-num">5</span></div>
+        <h4>Suivi & conformité</h4>
+        <p>Support mensuel, mise à jour des règles, accompagnement lors d'un audit RGPD/NIS2.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONFORMITÉ -->
+<section class="compliance-section" id="conformite">
+  <div class="section-inner">
+    <div class="compliance-grid">
+      <div class="compliance-text reveal">
+        <div class="section-label">Conformité</div>
+        <h3>Preuve cryptographique de chaque décision de votre IA.</h3>
+        <p>Openclaw Shield génère une preuve infalsifiable pour chaque action de votre agent.
+        En cas d'audit RGPD ou NIS2, vous pouvez montrer exactement ce que votre IA a fait,
+        quand, et quelle décision a été prise.</p>
+        <p>Cette preuve est basée sur un standard cryptographique international
+        (NIST FIPS 204 — Dilithium-3), résistant aux ordinateurs quantiques.</p>
+        <div class="compliance-callout">
+          <p>"En cas de contrôle CNIL, vous pouvez prouver que vous avez pris
+          les mesures techniques nécessaires. C'est exactement ce qu'exige l'article 32 du RGPD."</p>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="section-label">Standards supportés</div>
+        <div class="compliance-badges">
+          <div class="badge"><span class="dot"></span> RGPD Article 32</div>
+          <div class="badge"><span class="dot"></span> NIS2 Article 21</div>
+          <div class="badge"><span class="dot"></span> NIST FIPS 204</div>
+          <div class="badge"><span class="dot"></span> Dilithium-3</div>
+          <div class="badge"><span class="dot"></span> Audit Trail immuable</div>
+          <div class="badge"><span class="dot"></span> PostgreSQL sécurisé</div>
+        </div>
+        <div style="margin-top:2rem; padding:1.5rem; background:white; border-radius:8px; border:1px solid var(--line);">
+          <div style="font-size:0.75rem; color:var(--ink-3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:1rem;">Décision exemple</div>
+          <div style="font-family:monospace; font-size:0.8rem; color:var(--ink-2); line-height:1.8;">
+            <span style="color:var(--red-soft);">BLOQUÉ</span> · send_data → smtp://external.com<br>
+            Score : <strong>0.74</strong> / 1.0<br>
+            Règle : block-pii-external-transfer<br>
+            Preuve : <span style="color:var(--amber);">KwR3mNp7XsL9vT2...</span><br>
+            <span style="color:var(--green-soft);">✓ Vérifiable · Immuable · Opposable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TARIFS -->
+<section class="tarifs-section" id="tarifs">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label">Tarifs clairs</div>
+      <h2>Combien ça coûte, <em>vraiment ?</em></h2>
+      <p class="section-sub">Tout est transparent. Pas de surprise. Commencez gratuitement.</p>
+    </div>
+    <div class="tarifs-grid">
+      <div class="tarif-card reveal reveal-delay-1">
+        <div class="tarif-header">
+          <h3>Découverte</h3>
+          <div class="who">TPE, indépendants</div>
+        </div>
+        <div class="tarif-price">
+          <div class="tarif-amount">0 € <span class="per">pour toujours</span></div>
+          <div class="tarif-setup">10 000 décisions/mois incluses</div>
+        </div>
+        <ul class="tarif-items">
+          <li>Tableau de bord Openclaw Shield</li>
+          <li>4 règles de protection par défaut</li>
+          <li>Audit trail 30 jours</li>
+          <li>Documentation en français</li>
+          <li>Support communautaire</li>
+        </ul>
+        <div class="tarif-footer">
+          <a href="https://quantumcatena.github.io/openclaw-shield/" class="btn-offre">Commencer gratuitement</a>
+        </div>
+      </div>
+      <div class="tarif-card highlight reveal reveal-delay-2">
+        <div class="tarif-header">
+          <h3>Protection PME</h3>
+          <div class="who">PME, cabinets, professions réglementées</div>
+        </div>
+        <div class="tarif-price">
+          <div class="tarif-amount">149 € <span class="per">HT / mois</span></div>
+          <div class="tarif-setup">+ installation MODE83 à partir de 1 200 € HT</div>
+        </div>
+        <ul class="tarif-items">
+          <li>Décisions illimitées</li>
+          <li>Preuve cryptographique Dilithium-3</li>
+          <li>Audit trail 1 an PostgreSQL</li>
+          <li>Installation par QuantumCatena</li>
+          <li>Formation MODE83 (demi-journée)</li>
+          <li>Support email 48h · SLA 99,5%</li>
+        </ul>
+        <div class="tarif-footer">
+          <a href="#contact" class="btn-offre">Demander une démo</a>
+        </div>
+      </div>
+      <div class="tarif-card reveal reveal-delay-3">
+        <div class="tarif-header">
+          <h3>Local & Confidentiel</h3>
+          <div class="who">Professions réglementées, gros volumes</div>
+        </div>
+        <div class="tarif-price">
+          <div class="tarif-amount">Sur devis</div>
+          <div class="tarif-setup">Installation + support mensuel</div>
+        </div>
+        <ul class="tarif-items">
+          <li>LLM local (0 token, 0 cloud)</li>
+          <li>Génération IA illimitée</li>
+          <li>Données 100% dans vos locaux</li>
+          <li>Openclaw Shield en local</li>
+          <li>Support dédié QuantumCatena</li>
+          <li>Audit conformité NIS2/RGPD inclus</li>
+        </ul>
+        <div class="tarif-footer">
+          <a href="#contact" class="btn-offre">Demander un devis</a>
+        </div>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:2rem; font-size:0.82rem; color:var(--ink-3);">
+      💡 Formation éligible financement OPCO · Possibilité de devis pour marchés publics
+    </p>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section" id="contact">
+  <div class="section-inner">
+    <div class="section-label" style="justify-content:center; color:var(--amber-l);">Passez à l'action</div>
+    <h2>Parlons de votre situation. <em>30 minutes suffiront.</em></h2>
+    <p>Un appel gratuit avec l'équipe QuantumCatena pour comprendre vos besoins, identifier les risques, et vous proposer l'offre adaptée.</p>
+    <div class="cta-group">
+      <a href="mailto:contact@quantumcatena.io?subject=Démo Openclaw Shield — Demande de contact&body=Bonjour,%0A%0AJe souhaite en savoir plus sur Openclaw Shield pour mon entreprise.%0A%0ASecteur d'activité : %0ANombre de collaborateurs : %0AAgent IA déjà en place (oui/non) : %0A%0ACordialement," class="btn-primary">
+        📧 Écrire à QuantumCatena
+      </a>
+      <a href="https://quantumcatena.github.io/openclaw-shield/" class="btn-light">
+        Voir la démo en direct
+      </a>
+    </div>
+    <p class="cta-reassurance">
+      Sans engagement · Réponse sous 24h · Devis gratuit
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <a href="index.html" class="footer-logo">🦞 QuantumCatena</a>
+      <div style="margin-top:0.5rem; font-size:0.75rem;">
+        Joffrey CATENA · Dr. droit & informatique · SIRET 933 392 474 00013<br>
+        En partenariat avec <strong style="color:rgba(255,255,255,0.7)">MODE83</strong> pour la formation et le support local
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="index_fr.html">Espace développeurs</a>
+      <a href="https://sentinel-t26z.onrender.com/docs">API Docs</a>
+      <a href="https://quantumcatena.github.io/openclaw-shield/">Dashboard</a>
+      <a href="mailto:contact@quantumcatena.io">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Smooth anchor scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>
