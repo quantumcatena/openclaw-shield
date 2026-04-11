@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuantumCatena Sentinel — Securite post-quantique pour agents IA</title>
-<meta name="description" content="Intercept, evaluate and audit every AI agent action with preuve cryptographique post-quantique. NIS2 ready. NIST FIPS 204.">
+<title>QuantumCatena Sentinel — Post-Quantum AI Agent Security</title>
+<meta name="description" content="Intercept, evaluate and audit every AI agent action with post-quantum cryptographic proof. NIS2 ready. NIST FIPS 204.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -644,7 +644,7 @@ footer {
 <!-- LOADING -->
 <div class="loading" id="loading">
   <div class="loading-hex"></div>
-  <div class="loading-txt">INITIALISATION SENTINEL</div>
+  <div class="loading-txt">INITIALIZING SENTINEL</div>
 </div>
 
 <!-- CURSOR -->
@@ -654,7 +654,7 @@ footer {
 <!-- SPINNER -->
 <div class="spinner-overlay" id="spinner">
   <div class="spin-ring"></div>
-  <div class="spin-txt">CONNEXION A SENTINEL...</div>
+  <div class="spin-txt">CONNECTING TO SENTINEL...</div>
 </div>
 
 <!-- HEADER -->
@@ -664,14 +664,14 @@ footer {
     <div class="logo-text"><span>Quantum</span>Catena</div>
   </a>
   <nav>
-    <a class="nav-a" href="#how">Produit</a>
-    <a class="nav-a" href="#features">Fonctionnalites</a>
-    <a class="nav-a" href="#pricing">Tarifs</a>
+    <a class="nav-a" href="#how">Product</a>
+    <a class="nav-a" href="#features">Features</a>
+    <a class="nav-a" href="#pricing">Pricing</a>
     <div class="nav-divider"></div>
     <a class="nav-a" href="https://sentinel-t26z.onrender.com/docs" target="_blank">API Docs</a>
     <div class="nav-divider"></div>
-    <button class="btn-signin" onclick="scrollToForm('signin')">Connexion</button>
-    <button class="btn-cta" onclick="scrollToForm('signup')">Essai gratuit</button>
+    <button class="btn-signin" onclick="scrollToForm('signin')">Sign in</button>
+    <button class="btn-cta" onclick="scrollToForm('signup')">Start free</button>
   </nav>
 </header>
 
@@ -683,12 +683,12 @@ footer {
   <div class="hero-line"></div>
 
   <div class="hero-left">
-    <div class="eyebrow"><span class="eyebrow-line"></span>Securite IA post-quantique</div>
-    <h1 class="hero-h1">Chaque action de votre<br><em>interceptee</em><br>avant execution.</h1>
-    <p class="hero-sub">QuantumCatena Sentinel evaluates risk, enforces your policies and generates a <strong>preuve cryptographique post-quantique</strong> pour chaque decision — in under 10ms.</p>
+    <div class="eyebrow"><span class="eyebrow-line"></span>Post-Quantum AI Security</div>
+    <h1 class="hero-h1">Every AI agent action,<br><em>intercepted</em><br>before execution.</h1>
+    <p class="hero-sub">QuantumCatena Sentinel evaluates risk, enforces your policies and generates a <strong>post-quantum cryptographic proof</strong> for every decision — in under 10ms.</p>
     <div class="hero-actions">
-      <button class="btn-hero-primary" onclick="scrollToForm('signup')">Commencer gratuitement</button>
-      <button class="btn-hero-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">Voir comment ca marche →</button>
+      <button class="btn-hero-primary" onclick="scrollToForm('signup')">Start for free</button>
+      <button class="btn-hero-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">See how it works →</button>
     </div>
   </div>
 
@@ -699,14 +699,14 @@ footer {
         <div class="t-title">sentinel_live.py</div>
       </div>
       <div class="t-body">
-        <span class="tl"><span class="tc"># Integration en 3 lignes</span></span>
+        <span class="tl"><span class="tc"># 3-line integration</span></span>
         <span class="tl"><span class="tk">from</span> sentinel <span class="tk">import</span> SentinelClient</span>
         <span class="tl">s = SentinelClient(api_key=<span class="ts">"sk-qc-..."</span>)</span>
         <span class="tl">&nbsp;</span>
         <span class="tl"><span class="tk">@s</span>.protect(data_class=<span class="ts">"pii"</span>)</span>
         <span class="tl"><span class="tk">def</span> send_email(recipient, body): ...</span>
         <span class="tl">&nbsp;</span>
-        <span class="tl"><span class="tc"># Decisions en live</span></span>
+        <span class="tl"><span class="tc"># Live decisions</span></span>
         <span class="tl"><span class="tg">✓  read_file /etc/hostname &nbsp;&nbsp;&nbsp;ALLOW &nbsp;0.18 &nbsp;12ms</span></span>
         <span class="tl"><span class="tg">✓  call_api  api.github.com &nbsp;&nbsp;ALLOW &nbsp;0.42 &nbsp;17ms</span></span>
         <span class="tl"><span class="ta">⚠  send_email colleague@co. &nbsp;REVIEW &nbsp;0.57 &nbsp;5ms</span></span>
@@ -723,9 +723,9 @@ footer {
   </div>
 
   <div class="lang-switch">
-    <button class="lang-btn active" onclick="window.location='index_fr.html'">FR</button>
+    <button class="lang-btn" onclick="window.location='index_fr.html'">FR</button>
     <span style="color:var(--line);font-size:12px">|</span>
-    <button class="lang-btn">EN</button>
+    <button class="lang-btn active">EN</button>
   </div>
 </section>
 
@@ -747,30 +747,30 @@ footer {
 <div class="stats-strip reveal">
   <div class="stat-cell"><div class="stat-num">&lt;10</div><div class="stat-lbl">ms interception</div></div>
   <div class="stat-cell"><div class="stat-num">204</div><div class="stat-lbl">NIST FIPS standard</div></div>
-  <div class="stat-cell"><div class="stat-num">3</div><div class="stat-lbl">lignes pour integrer</div></div>
-  <div class="stat-cell"><div class="stat-num">100%</div><div class="stat-lbl">couverture audit trail</div></div>
+  <div class="stat-cell"><div class="stat-num">3</div><div class="stat-lbl">lines to integrate</div></div>
+  <div class="stat-cell"><div class="stat-num">100%</div><div class="stat-lbl">audit trail coverage</div></div>
 </div>
 
 <!-- HOW IT WORKS -->
 <section class="section-how" id="how">
   <div class="wrap">
-    <div class="section-label reveal">Fonctionnement</div>
-    <h2 class="section-title reveal">Interception physique<br>entre agent et <em>action.</em></h2>
-    <p class="section-sub reveal">Sentinel sits between the agent's decision and real execution. L'agent ne peut pas contourner la verification — c'est architectural.</p>
+    <div class="section-label reveal">How it works</div>
+    <h2 class="section-title reveal">Physical interception<br>between agent and <em>action.</em></h2>
+    <p class="section-sub reveal">Sentinel sits between the agent's decision and real execution. The agent cannot bypass the check — it's architectural, not optional.</p>
 
     <div class="how-grid reveal">
       <div class="how-step">
         <div class="how-n">01</div>
         <span class="how-icon">🤖</span>
-        <h4>Agent decide</h4>
-        <p>Claude, LangChain or your custom agent choisit une action a executer.</p>
+        <h4>Agent decides</h4>
+        <p>Claude, LangChain or your custom agent selects an action to execute.</p>
         <div class="how-arrow">›</div>
       </div>
       <div class="how-step">
         <div class="how-n">02</div>
         <span class="how-icon">🔒</span>
-        <h4>SDK intercepte</h4>
-        <p>Before execution, the decorator calls Sentinel. L'action est suspendue.</p>
+        <h4>SDK intercepts</h4>
+        <p>Before execution, the decorator calls Sentinel. The action is suspended.</p>
         <div class="how-arrow">›</div>
       </div>
       <div class="how-step">
@@ -790,7 +790,7 @@ footer {
       <div class="how-step">
         <div class="how-n">05</div>
         <span class="how-icon">🛡️</span>
-        <h4>Decision + Preuve PQC</h4>
+        <h4>Decision + PQC Proof</h4>
         <p>ALLOW / REVIEW / BLOCK — signed with Dilithium-3 NIST FIPS 204.</p>
       </div>
     </div>
@@ -800,19 +800,19 @@ footer {
 <!-- FEATURES BENTO -->
 <section class="section-features" id="features">
   <div class="wrap">
-    <div class="section-label reveal">Fonctionnalites</div>
-    <h2 class="section-title reveal">Un vrai produit.<br>Pas un <em>prototype.</em></h2>
+    <div class="section-label reveal">Features</div>
+    <h2 class="section-title reveal">A real product.<br>Not a <em>prototype.</em></h2>
     <div class="bento reveal">
       <div class="bento-cell span-5">
         <span class="cell-tag">SDK</span>
-        <div class="cell-title">Integration en 3 lignes</div>
-        <div class="cell-body">Installez via pip. Decorez vos fonctions. Pret.<br><br><code style="font-family:var(--mono);font-size:11px;color:var(--teal)">pip install quantumcatena-sentinel</code></div>
+        <div class="cell-title">3-line integration</div>
+        <div class="cell-body">Install via pip. Wrap any function. Done.<br><br><code style="font-family:var(--mono);font-size:11px;color:var(--teal)">pip install quantumcatena-sentinel</code></div>
         <span class="cell-badge">APACHE 2.0 · OPEN SOURCE</span>
       </div>
       <div class="bento-cell span-7">
         <span class="cell-tag">Risk Engine</span>
-        <div class="cell-title">Score transparent — sans boite noire</div>
-        <div class="cell-body" style="margin-bottom:20px">Chaque facteur explique. Auditable. Configurable.</div>
+        <div class="cell-title">Transparent scoring — no black box</div>
+        <div class="cell-body" style="margin-bottom:20px">Every factor explained. Auditable. Configurable.</div>
         <div class="risk-bar-row"><div class="risk-bar-label">PII data</div><div class="risk-bar-track"><div class="risk-bar-fill" style="width:90%;background:var(--red)"></div></div><div class="risk-bar-val" style="color:var(--red)">0.90</div></div>
         <div class="risk-bar-row"><div class="risk-bar-label">External API</div><div class="risk-bar-track"><div class="risk-bar-fill" style="width:55%;background:var(--amber)"></div></div><div class="risk-bar-val" style="color:var(--amber)">0.55</div></div>
         <div class="risk-bar-row"><div class="risk-bar-label">Internal read</div><div class="risk-bar-track"><div class="risk-bar-fill" style="width:18%;background:var(--green)"></div></div><div class="risk-bar-val" style="color:var(--green)">0.18</div></div>
@@ -820,26 +820,26 @@ footer {
       <div class="bento-cell span-4">
         <span class="cell-tag">Post-Quantum</span>
         <div class="cell-title">Dilithium-3<br>NIST FIPS 204</div>
-        <div class="cell-body">Cryptographic proof resistante aux ordinateurs quantiques. Chaque decision reste prouvable — pour toujours.</div>
+        <div class="cell-body">Cryptographic proof resistant to quantum computers. Every past decision remains provable — forever.</div>
       </div>
       <div class="bento-cell span-4">
         <span class="cell-tag">Policy Engine</span>
-        <div class="cell-title">YAML rules,<br>votre logique</div>
-        <div class="cell-body">Declarative ALLOW / REVIEW / BLOCK rules. Priorite ordonnee. Par tenant en Enterprise.</div>
+        <div class="cell-title">YAML rules,<br>your logic</div>
+        <div class="cell-body">Declarative ALLOW / REVIEW / BLOCK rules. Priority-ordered. Per-tenant on Enterprise.</div>
       </div>
       <div class="bento-cell span-4 dark">
         <span class="cell-tag">Compliance</span>
         <div class="cell-title">NIS2 &amp;<br>GDPR ready</div>
-        <div class="cell-body">Append-only audit ledger with chain hashing. Inviolable. Preuve opposable en justice.</div>
+        <div class="cell-body">Append-only audit ledger with chain hashing. Tamper-evident. Court-admissible proof.</div>
       </div>
       <div class="bento-cell span-6">
         <span class="cell-tag">Dashboard</span>
-        <div class="cell-title">Visibilite temps reel sur chaque action</div>
+        <div class="cell-title">Real-time visibility on every agent action</div>
         <div class="cell-body">Live activity feed, risk distribution, PQC proof viewer, policy management — all in one place.</div>
       </div>
       <div class="bento-cell span-6">
         <span class="cell-tag">LangChain &amp; Anthropic</span>
-        <div class="cell-title">Integration native avec les frameworks majeurs</div>
+        <div class="cell-title">Native integration with major agent frameworks</div>
         <div class="cell-body">SentinelToolkit wraps your tools automatically. Pass <code style="font-family:var(--mono);font-size:11px;color:var(--teal)">toolkit.anthropic_tools</code> directly to your agent.</div>
       </div>
     </div>
@@ -851,27 +851,27 @@ footer {
   <div class="wrap">
     <div class="pricing-header reveal">
       <div>
-        <div class="section-label">Tarifs</div>
+        <div class="section-label">Pricing</div>
         <h2 class="section-title" style="margin-bottom:0">Simple.<br><em>Transparent.</em></h2>
       </div>
-      <p style="max-width:320px;font-size:14px;font-weight:300;color:var(--dim);line-height:1.8;text-align:right">Commencez gratuitement. Sans CB. Passez en Pro quand vous avez besoin de plus.</p>
+      <p style="max-width:320px;font-size:14px;font-weight:300;color:var(--dim);line-height:1.8;text-align:right">Start free. No credit card. Upgrade when you need more.</p>
     </div>
     <div class="pricing-grid reveal">
       <div class="plan">
         <div class="plan-tier">FREE</div>
         <div class="plan-price">0<sub> EUR</sub></div>
-        <div class="plan-cycle">a vie</div>
+        <div class="plan-cycle">forever</div>
         <div class="plan-divider"></div>
         <ul class="plan-features">
-          <li class="inc">10 000 decisions / mois</li>
+          <li class="inc">10,000 decisions / month</li>
           <li class="inc">Python SDK (Apache 2.0)</li>
           <li class="inc">Openclaw Shield dashboard</li>
           <li class="inc">Ed25519 (PQC simulation)</li>
-          <li>Policies custom</li>
+          <li>Custom policies</li>
           <li>PostgreSQL audit log</li>
           <li>SLA / Support</li>
         </ul>
-        <button class="plan-btn outline" onclick="scrollToForm('signup')">Creer un compte</button>
+        <button class="plan-btn outline" onclick="scrollToForm('signup')">Create account</button>
       </div>
       <div class="plan featured">
         <div class="plan-tier">PRO</div>
@@ -881,13 +881,13 @@ footer {
         <ul class="plan-features">
           <li class="inc">Unlimited decisions</li>
           <li class="inc">Python SDK (Apache 2.0)</li>
-          <li class="inc">Dashboard temps reel</li>
+          <li class="inc">Real-time dashboard</li>
           <li class="inc">Dilithium-3 NIST FIPS 204</li>
-          <li class="inc">Policies YAML custom</li>
-          <li class="inc">PostgreSQL — 1 an de retention</li>
+          <li class="inc">Custom YAML policies</li>
+          <li class="inc">PostgreSQL — 1 year retention</li>
           <li class="inc">Email support 48h · SLA 99.5%</li>
         </ul>
-        <button class="plan-btn gold" onclick="scrollToForm('signup')">Commencer Pro</button>
+        <button class="plan-btn gold" onclick="scrollToForm('signup')">Start Pro</button>
       </div>
       <div class="plan">
         <div class="plan-tier">ENTERPRISE</div>
@@ -896,14 +896,14 @@ footer {
         <div class="plan-divider"></div>
         <ul class="plan-features">
           <li class="inc">Unlimited decisions</li>
-          <li class="inc">Deploiement on-premise</li>
+          <li class="inc">On-premise deployment</li>
           <li class="inc">Dilithium-3 + HSM (Thales/AWS)</li>
-          <li class="inc">Audit NIS2/RGPD inclus</li>
-          <li class="inc">Policies avancees multi-tenant</li>
-          <li class="inc">Slack prive + Tel · SLA 99.9%</li>
-          <li class="inc">CSM dedie + rapport mensuel</li>
+          <li class="inc">NIS2 / GDPR audit included</li>
+          <li class="inc">Advanced multi-tenant policies</li>
+          <li class="inc">Private Slack + Phone · SLA 99.9%</li>
+          <li class="inc">Dedicated CSM + monthly report</li>
         </ul>
-        <button class="plan-btn ghost" onclick="window.location='mailto:contact@quantumcatena.io?subject=Enterprise'">Nous contacter</button>
+        <button class="plan-btn ghost" onclick="window.location='mailto:contact@quantumcatena.io?subject=Enterprise'">Contact us</button>
       </div>
     </div>
   </div>
@@ -915,9 +915,9 @@ footer {
   <div class="wrap">
     <div class="section-form">
       <div class="form-left reveal">
-        <div class="section-label">Demarrage</div>
-        <h2 class="section-title">Votre cle API,<br><em>en 30 secondes.</em></h2>
-        <p>Sans CB. Sans appel commercial. Creez votre compte, copiez votre cle, integrez en 3 lignes.</p>
+        <div class="section-label">Get started</div>
+        <h2 class="section-title">Your API key,<br><em>in 30 seconds.</em></h2>
+        <p>No credit card. No sales call. Create your account, copy your key, integrate in 3 lines.</p>
         <div class="proof-snippet">
           <div><span class="pd">ALGORITHM</span> &nbsp;Dilithium-3 (NIST FIPS 204)</div>
           <div><span class="pd">DECISION &nbsp;</span> &nbsp;<span class="ps">BLOCK</span></div>
@@ -930,41 +930,41 @@ footer {
       <div class="form-right reveal">
         <div class="form-card">
           <div class="form-tabs">
-            <button class="ftab on" id="ftab-si" onclick="fswitch('si')">Connexion</button>
+            <button class="ftab on" id="ftab-si" onclick="fswitch('si')">Sign in</button>
             <button class="ftab" id="ftab-su" onclick="fswitch('su')">Sign up</button>
           </div>
 
           <!-- SIGN IN -->
           <div class="tab-panel on form-body" id="tp-si">
-            <div class="form-h">Bon retour.</div>
-            <div class="form-sh">Acces a votre dashboard Sentinel.</div>
-            <div class="err-msg" id="err-si">Email ou mot de passe incorrect.</div>
+            <div class="form-h">Welcome back.</div>
+            <div class="form-sh">Access your Sentinel dashboard.</div>
+            <div class="err-msg" id="err-si">Incorrect email or password.</div>
             <button class="btn-google" onclick="oauthGoogle()">
               <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-              Continuer avec Google
+              Continue with Google
             </button>
             <div class="divider-or"><div class="div-l"></div><div class="div-t">OR</div><div class="div-l"></div></div>
             <div class="field"><label>Email</label><input type="email" id="si-email" placeholder="you@domain.com" autocomplete="email"></div>
             <div class="field"><label>Password</label><input type="password" id="si-pwd" placeholder="••••••••••••" autocomplete="current-password"></div>
             <button class="btn-submit" onclick="doSignin()">Sign in →</button>
-            <div class="form-note">Pas encore de compte ? <a href="#" onclick="fswitch('su');return false">Sign up</a></div>
+            <div class="form-note">No account? <a href="#" onclick="fswitch('su');return false">Sign up</a></div>
           </div>
 
           <!-- SIGN UP -->
           <div class="tab-panel form-body" id="tp-su">
             <div class="form-h">Start for free.</div>
             <div class="form-sh">10,000 decisions/month. No credit card.</div>
-            <div class="err-msg" id="err-su">Une erreur est survenue. Verifiez vos informations.</div>
+            <div class="err-msg" id="err-su">An error occurred. Please check your details.</div>
             <button class="btn-google" onclick="oauthGoogle()">
               <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-              Continuer avec Google
+              Continue with Google
             </button>
             <div class="divider-or"><div class="div-l"></div><div class="div-t">OR</div><div class="div-l"></div></div>
-            <div class="field"><label>Nom ou organisation</label><input type="text" id="su-name" placeholder="Votre nom ou societe" autocomplete="name"></div>
+            <div class="field"><label>Name or organization</label><input type="text" id="su-name" placeholder="Your name or company" autocomplete="name"></div>
             <div class="field"><label>Email</label><input type="email" id="su-email" placeholder="you@domain.com" autocomplete="email"></div>
-            <div class="field"><label>Password</label><input type="password" id="su-pwd" placeholder="Minimum 8 caracteres" autocomplete="new-password"></div>
-            <button class="btn-submit" onclick="doSignup()">Creer mon compte →</button>
-            <div class="form-note">Deja un compte ? <a href="#" onclick="fswitch('si');return false">Connexion</a></div>
+            <div class="field"><label>Password</label><input type="password" id="su-pwd" placeholder="Minimum 8 characters" autocomplete="new-password"></div>
+            <button class="btn-submit" onclick="doSignup()">Create account →</button>
+            <div class="form-note">Already have an account? <a href="#" onclick="fswitch('si');return false">Sign in</a></div>
             <div class="form-tc">By signing up you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</div>
           </div>
 
@@ -972,14 +972,14 @@ footer {
           <div class="tab-panel" id="tp-ok">
             <div class="success-wrap">
               <span class="success-icon">🛡️</span>
-              <div class="form-h">Compte cree.</div>
+              <div class="form-h">Account created.</div>
               <div class="form-sh" style="margin-bottom:0">Your Sentinel API key is ready.<br>Copy it now — it will not be shown again.</div>
               <div class="api-key-wrap">
                 <div class="api-key-val" id="api-key-display">sk-qc-xxxxxxxx...</div>
                 <button class="copy-btn" onclick="copyKey()">COPY</button>
               </div>
-              <div class="key-warn">⚠ Conservez cette cle en lieu sur.</div>
-              <button class="btn-submit" onclick="window.location='app.html'">Acceder au dashboard →</button>
+              <div class="key-warn">⚠ Store this key securely.</div>
+              <button class="btn-submit" onclick="window.location='app.html'">Go to dashboard →</button>
             </div>
           </div>
 
@@ -1067,8 +1067,8 @@ async function doSignup() {
   const name = document.getElementById('su-name').value.trim();
   const email = document.getElementById('su-email').value.trim();
   const pwd = document.getElementById('su-pwd').value;
-  if(!name||!email||!pwd) { showErr('err-su','Tous les champs sont requis.'); return; }
-  if(pwd.length < 8) { showErr('err-su','Le mot de passe doit faire au moins 8 caracteres.'); return; }
+  if(!name||!email||!pwd) { showErr('err-su','All fields are required.'); return; }
+  if(pwd.length < 8) { showErr('err-su','Password must be at least 8 characters.'); return; }
   spin(true);
   try {
     const slug = 'tenant-' + email.split('@')[0].replace(/[^a-z0-9]/gi,'').toLowerCase().slice(0,16) + '-' + Math.random().toString(36).slice(2,6);
@@ -1077,7 +1077,7 @@ async function doSignup() {
       body: JSON.stringify({name, slug, plan:'free', admin_email:email, admin_password:pwd})
     });
     const d = await r.json();
-    if(!r.ok) { showErr('err-su', d.detail||'Erreur lors de la creation du compte.'); return; }
+    if(!r.ok) { showErr('err-su', d.detail||'Error creating account.'); return; }
     const lr = await fetch(SENTINEL_API+'/v1/auth/login', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({email, password:pwd, tenant_slug:slug})
@@ -1089,7 +1089,7 @@ async function doSignup() {
     localStorage.setItem('sentinel_api_key', apiKey);
     document.getElementById('api-key-display').textContent = apiKey;
     fswitch('ok');
-  } catch(e) { showErr('err-su','Impossible de joindre Sentinel.'); }
+  } catch(e) { showErr('err-su','Cannot reach Sentinel. Check your connection.'); }
   finally { spin(false); }
 }
 
@@ -1106,7 +1106,7 @@ async function doSignin() {
       body: JSON.stringify({email, password:pwd, tenant_slug:slug})
     });
     const d = await r.json();
-    if(!r.ok) { showErr('err-si','Email ou mot de passe incorrect.'); return; }
+    if(!r.ok) { showErr('err-si','Incorrect email or password.'); return; }
     localStorage.setItem('sentinel_token', d.access_token);
     localStorage.setItem('sentinel_email', email);
     window.location.href = 'app.html';
@@ -1119,7 +1119,7 @@ function copyKey() {
   const key = document.getElementById('api-key-display').textContent;
   navigator.clipboard.writeText(key).then(() => {
     const btn = document.querySelector('.copy-btn');
-    btn.textContent = 'COPIE !';
+    btn.textContent = 'COPIED!';
     setTimeout(() => btn.textContent = 'COPY', 2000);
   });
 }
