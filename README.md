@@ -12,6 +12,43 @@ Openclaw Shield est l'interface grand public de **QuantumCatena Sentinel**. Là 
 
 **En une phrase** : chaque action de votre agent IA est interceptée, évaluée, et vous est présentée de façon claire — avant qu'il ne soit trop tard.
 
+
+---
+
+## Pourquoi Sentinel si les LLMs refusent déjà les actions dangereuses ?
+
+C'est une question légitime. Les grands modèles comme Claude ont effectivement des gardes-fous intégrés et peuvent refuser certaines actions risquées. **Mais cette protection seule ne suffit pas — voici pourquoi.**
+
+### 1. Tous les agents ne sont pas Claude
+
+GPT-4, Mistral, Llama, des modèles open source moins alignés ou des modèles fine-tunés pour l'automatisation — beaucoup n'ont pas les mêmes refus. Sentinel protège **indépendamment du modèle utilisé**. C'est une couche externe qui s'applique à n'importe quel agent.
+
+### 2. Les LLMs peuvent être manipulés
+
+Le prompt injection, le jailbreak, un utilisateur malveillant qui reformule sa demande — un agent peut être amené à exécuter des actions qu'il refuserait normalement. Sentinel est une couche que **l'agent ne peut pas contourner** : il ne voit pas Sentinel, il ne peut pas le désactiver.
+
+### 3. La conformité réglementaire exige des preuves
+
+Une entreprise ne peut pas dire à son auditeur *"faites confiance au LLM"*. Elle a besoin d'une trace immuable, d'une preuve cryptographique, d'un journal d'audit vérifiable. **Un refus verbal de l'IA n'est pas auditable.** La preuve PQC de Sentinel l'est.
+
+### 4. La défense en profondeur
+
+En cybersécurité, on ne s'appuie jamais sur une seule couche. Le principe est toujours le même : multiplier les barrières indépendantes.
+
+```
+LLM prudent       → première barrière (peut être contournée)
+Sentinel Shield   → deuxième barrière (externe, non contournable)
+Audit ledger PQC  → troisième barrière (preuve immuable)
+```
+
+**Le bon résumé** : Claude est déjà prudent — mais pas tous les agents ne le sont, pas toutes les situations sont prévues, et aucune entreprise ne peut auditer un refus verbal. Shield rend la protection **vérifiable, externe et universelle**.
+
+---
+
+
+---
+
+
 ---
 
 ## Fonctionnement
