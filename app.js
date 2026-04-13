@@ -96,17 +96,19 @@ function renderStats(stats) {
   document.getElementById("stat-blocked").textContent = stats.blocked;
 
   const total = stats.allowed + stats.review + stats.blocked;
+  // Score amplifie : les blocages ont un poids plus fort
+  // 1 blocage sur 5 actions = Critique, 1 sur 10 = Modere
   const riskScore = total === 0 ? 0 :
-    (stats.review * 0.5 + stats.blocked * 1.0) / total;
+    Math.min(1.0, (stats.review * 0.4 + stats.blocked * 2.5) / total);
 
   const bar = document.getElementById("risk-bar");
   const val = document.getElementById("risk-val");
 
   let level, color, pct;
-  if (riskScore < 0.2) {
+  if (riskScore < 0.15) {
     level = "Faible"; color = "var(--safe)"; pct = Math.max(8, riskScore * 100);
     val.className = "risk-value safe";
-  } else if (riskScore < 0.5) {
+  } else if (riskScore < 0.4) {
     level = "Modéré"; color = "var(--warn)"; pct = riskScore * 100;
     val.className = "risk-value warn";
   } else {
