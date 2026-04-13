@@ -8,10 +8,9 @@
 // ─── Configuration ────────────────────────────────────────────────────────────
 
 const CONFIG = {
-  // URL de votre backend Sentinel (à configurer)
-  // Mettez null pour utiliser le mode démo avec données simulées
-  SENTINEL_API: null, // ex: "http://localhost:8000"
+  SENTINEL_API: "https://sentinel-t26z.onrender.com",
   POLL_INTERVAL_MS: 5000,
+  TOKEN: null,
 };
 
 // ─── Données de démonstration ─────────────────────────────────────────────────
@@ -97,17 +96,19 @@ function renderStats(stats) {
   document.getElementById("stat-blocked").textContent = stats.blocked;
 
   const total = stats.allowed + stats.review + stats.blocked;
+  // Score amplifie : les blocages ont un poids plus fort
+  // 1 blocage sur 5 actions = Critique, 1 sur 10 = Modere
   const riskScore = total === 0 ? 0 :
-    (stats.review * 0.5 + stats.blocked * 1.0) / total;
+    Math.min(1.0, (stats.review * 0.4 + stats.blocked * 2.5) / total);
 
   const bar = document.getElementById("risk-bar");
   const val = document.getElementById("risk-val");
 
   let level, color, pct;
-  if (riskScore < 0.2) {
+  if (riskScore < 0.15) {
     level = "Faible"; color = "var(--safe)"; pct = Math.max(8, riskScore * 100);
     val.className = "risk-value safe";
-  } else if (riskScore < 0.5) {
+  } else if (riskScore < 0.4) {
     level = "Modéré"; color = "var(--warn)"; pct = riskScore * 100;
     val.className = "risk-value warn";
   } else {
@@ -162,17 +163,44 @@ function closeModal(e) {
 async function fetchFromSentinel() {
   if (!CONFIG.SENTINEL_API) return null;
 
+  // Login automatique si pas de token
+  if (!CONFIG.TOKEN) {
+    try {
+      const r = await fetch(`${CONFIG.SENTINEL_API}/v1/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: "demo2@openclaw.io",
+          password: "Demo1234!",
+          tenant_slug: "openclaw-demo2",
+        }),
+      });
+      if (r.ok) {
+        const data = await r.json();
+        CONFIG.TOKEN = data.access_token;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.warn("Login Sentinel échoué", err);
+      return null;
+    }
+  }
+
   try {
+    const headers = { "Authorization": `Bearer ${CONFIG.TOKEN}` };
     const [statsRes, auditRes] = await Promise.all([
-      fetch(`${CONFIG.SENTINEL_API}/v1/stats`),
-      fetch(`${CONFIG.SENTINEL_API}/v1/audit/recent?limit=10`),
+      fetch(`${CONFIG.SENTINEL_API}/v1/stats`, { headers }),
+      fetch(`${CONFIG.SENTINEL_API}/v1/audit/recent?limit=10`, { headers }),
     ]);
 
-    if (!statsRes.ok || !auditRes.ok) return null;
+    if (!statsRes.ok || !auditRes.ok) {
+      CONFIG.TOKEN = null; // token expiré, forcer re-login au prochain cycle
+      return null;
+    }
 
-    const stats  = await statsRes.json();
-    const audit  = await auditRes.json();
-
+    const stats = await statsRes.json();
+    const audit = await auditRes.json();
     return { stats, audit };
   } catch (err) {
     console.warn("Sentinel API non disponible — mode démo actif", err);
@@ -186,27 +214,57 @@ function mapSentinelAudit(auditEntries) {
     const type = decision === "allow" ? "safe" :
                  decision === "review" ? "warn" : "block";
 
-    const minutesAgo = Math.floor((Date.now() - new Date(entry.timestamp)) / 60000);
+    // CORRECTION : champ decided_at (pas timestamp)
+    const minutesAgo = Math.floor((Date.now() - new Date(entry.decided_at)) / 60000);
     const timeStr = minutesAgo <= 0 ? "à l'instant" :
                     minutesAgo === 1 ? "il y a 1 min" : `il y a ${minutesAgo} min`;
 
     const actionLabels = {
-      send_data:     "Envoi de données",
-      read_data:     "Lecture de données",
-      call_api:      "Appel API externe",
-      execute_code:  "Exécution de code",
+      send_data:      "Envoi de données",
+      read_data:      "Lecture de données",
+      call_api:       "Appel API externe",
+      execute_code:   "Exécution de code",
       delete_records: "Suppression d'enregistrements",
       transfer_funds: "Transfert financier",
     };
 
+    const detailMap = {
+      safe: {
+        read_data:      'Lecture verifiee, aucun risque detecte',
+        call_api:       'Appel API surveille, autorise',
+        send_data:      'Envoi verifie, destinataire connu',
+        execute_code:   'Script verifie et approuve',
+        transfer_funds: 'Transaction dans les limites autorisees',
+      },
+      warn: {
+        read_data:      'Fichier sensible, acces surveille',
+        call_api:       'Serveur externe inconnu, a verifier',
+        send_data:      'Destinataire non reconnu, surveillance activee',
+        execute_code:   'Script non standard, execution surveillee',
+        transfer_funds: 'Montant inhabituel, validation recommandee',
+      },
+      block: {
+        read_data:      'Acces bloque, donnees protegees',
+        call_api:       'Appel bloque, serveur non autorise',
+        send_data:      'Envoi bloque, donnees personnelles detectees',
+        execute_code:   'Execution bloquee, script non approuve',
+        transfer_funds: 'Virement bloque, montant depasse le seuil',
+      },
+    };
+    const detail = (detailMap[type] && detailMap[type][entry.action_type])
+      ? detailMap[type][entry.action_type]
+      : type === 'block' ? 'Action bloquee par politique de securite'
+      : type === 'warn'  ? 'Action signalee pour verification'
+      : 'Action verifiee et autorisee';
+
     return {
       id:       entry.action_hash?.substring(0, 12) || `evt-${i}`,
-      action:   actionLabels[entry.action_type] || entry.action_type || "Action agent",
-      detail:   entry.reasoning?.split(":")[0] || entry.target || "Évalué par Sentinel",
+      action:   actionLabels[entry.action_type] || entry.action_type || 'Action agent',
+      detail,
       type,
       score:    entry.risk_score ?? 0,
-      decision: type === "safe" ? "AUTORISÉ" : type === "warn" ? "À VÉRIFIER" : "BLOQUÉ",
-      proof:    `ed25519:${entry.pqc_proof?.substring(0, 32) || "..."}`,
+      decision: type === 'safe' ? 'AUTORISE' : type === 'warn' ? 'A VERIFIER' : 'BLOQUE',
+      proof:    `ed25519:${entry.pqc_proof?.substring(0, 32) || '...'}`,
       time:     timeStr,
     };
   });
@@ -216,70 +274,142 @@ function mapSentinelAudit(auditEntries) {
 
 async function update() {
   const sentinelData = await fetchFromSentinel();
-
   if (sentinelData) {
-    // Mode live — données réelles depuis le backend
     const s = sentinelData.stats;
     state.stats = {
-      allowed: s.total_allowed ?? s.allow_count ?? 0,
-      review:  s.total_review  ?? s.review_count ?? 0,
-      blocked: s.total_blocked ?? s.block_count ?? 0,
+      allowed: s.by_decision?.allow   ?? s.total_allowed ?? 0,
+      review:  s.by_decision?.review  ?? s.total_review  ?? 0,
+      blocked: s.blocked_actions      ?? s.by_decision?.block ?? s.total_blocked ?? 0,
     };
-    state.events = mapSentinelAudit(sentinelData.audit.entries ?? sentinelData.audit ?? []);
+    const auditArray = Array.isArray(sentinelData.audit)
+      ? sentinelData.audit
+      : sentinelData.audit.entries ?? [];
+    state.events = mapSentinelAudit(auditArray);
   } else {
-    // Mode démo
     state.events = DEMO_EVENTS;
     state.stats  = { allowed: 47, review: 3, blocked: 2 };
   }
-
   renderFeed(state.events);
   renderStats(state.stats);
   renderCTA(state.stats);
 }
 
 function animateStats() {
-  const targets = {
-    allowed: state.stats.allowed,
-    review:  state.stats.review,
-    blocked: state.stats.blocked,
-  };
+  const targets = { allowed: state.stats.allowed, review: state.stats.review, blocked: state.stats.blocked };
   const current = { allowed: 0, review: 0, blocked: 0 };
   const duration = 800;
   const start = performance.now();
-
   function tick(now) {
     const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
-    const ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-
-    Object.keys(targets).forEach(key => {
-      current[key] = Math.round(targets[key] * ease);
-    });
-
-    document.getElementById("stat-allowed").textContent = current.allowed;
-    document.getElementById("stat-review").textContent  = current.review;
-    document.getElementById("stat-blocked").textContent = current.blocked;
-
+    const ease = 1 - Math.pow(1 - progress, 3);
+    Object.keys(targets).forEach(key => { current[key] = Math.round(targets[key] * ease); });
+    document.getElementById('stat-allowed').textContent = current.allowed;
+    document.getElementById('stat-review').textContent  = current.review;
+    document.getElementById('stat-blocked').textContent = current.blocked;
     if (progress < 1) requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
 }
 
-// ─── Boot ─────────────────────────────────────────────────────────────────────
+// SSE temps reel
+let _sseSource = null;
 
-document.addEventListener("DOMContentLoaded", async () => {
+async function connectSSE() {
+  if (!CONFIG.SENTINEL_API || !CONFIG.TOKEN) return;
+  if (_sseSource) { _sseSource.close(); _sseSource = null; }
+  const url = CONFIG.SENTINEL_API + '/v1/events/stream?token=' + CONFIG.TOKEN;
+  try {
+    _sseSource = new EventSource(url);
+    _sseSource.addEventListener('connected', () => {
+      console.log('[Shield] SSE connecte - temps reel actif');
+      showLiveIndicator(true);
+    });
+    _sseSource.addEventListener('decision', (e) => {
+      const entry = JSON.parse(e.data);
+      onNewDecision(entry);
+    });
+    _sseSource.onerror = () => {
+      console.warn('[Shield] SSE deconnecte - fallback polling');
+      showLiveIndicator(false);
+      _sseSource.close();
+      _sseSource = null;
+      setTimeout(startPollingFallback, 2000);
+    };
+  } catch(err) {
+    console.warn('[Shield] SSE non disponible', err);
+    startPollingFallback();
+  }
+}
+
+function onNewDecision(entry) {
+  const mapped = mapSentinelAudit([entry])[0];
+  if (!mapped) return;
+  state.events = [mapped, ...state.events].slice(0, 20);
+  if (mapped.type === 'safe')  state.stats.allowed++;
+  if (mapped.type === 'warn')  state.stats.review++;
+  if (mapped.type === 'block') state.stats.blocked++;
+  renderFeed(state.events);
+  renderStats(state.stats);
+  renderCTA(state.stats);
+  flashNewEntry(mapped.type);
+  if (mapped.type === 'block') showBlockNotification(mapped.action, mapped.detail);
+}
+
+function flashNewEntry(type) {
+  const feed = document.getElementById('feed');
+  const first = feed.querySelector('.feed-item');
+  if (!first) return;
+  const colors = { safe: '#1a9e6e', warn: '#d97706', block: '#dc3545' };
+  first.style.transition = 'background 0.1s';
+  first.style.background = colors[type] + '22';
+  setTimeout(() => { first.style.background = ''; }, 800);
+}
+
+function showBlockNotification(action, detail) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    new Notification('Openclaw Shield - Action bloquee', { body: action + ' - ' + detail });
+  }
+}
+
+function showLiveIndicator(live) {
+  let dot = document.getElementById('live-dot');
+  if (!dot) {
+    dot = document.createElement('span');
+    dot.id = 'live-dot';
+    dot.style.cssText = 'display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:8px;vertical-align:middle;';
+    const style = document.createElement('style');
+    style.textContent = '@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}';
+    document.head.appendChild(style);
+    dot.style.animation = 'pulse 1.5s infinite';
+    const title = document.querySelector('h1');
+    if (title) title.appendChild(dot);
+  }
+  dot.style.background = live ? '#1a9e6e' : '#dc3545';
+}
+
+let _pollingInterval = null;
+function startPollingFallback() {
+  if (_pollingInterval) return;
+  _pollingInterval = setInterval(update, CONFIG.POLL_INTERVAL_MS);
+}
+
+// Boot
+document.addEventListener('DOMContentLoaded', async () => {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
   await update();
   setTimeout(animateStats, 200);
-
-  // Polling automatique si API configurée
   if (CONFIG.SENTINEL_API) {
-    setInterval(update, CONFIG.POLL_INTERVAL_MS);
+    setTimeout(async () => {
+      if (CONFIG.TOKEN) { await connectSSE(); }
+      else { startPollingFallback(); }
+    }, 1000);
   }
-
-  // Mise à jour du timer CTA chaque minute
-  setInterval(() => renderCTA(state.stats), 30_000);
+  setInterval(() => renderCTA(state.stats), 30000);
 });
 
-// Exposer openModal globalement pour les onclick inline
-window.openModal   = openModal;
-window.closeModal  = closeModal;
+window.openModal  = openModal;
+window.closeModal = closeModal;
